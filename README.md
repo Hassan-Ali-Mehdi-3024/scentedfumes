@@ -1,36 +1,111 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Scented Fumes - Headless E-Commerce
 
-## Getting Started
+A Next.js 16.1.1 + Tailwind CSS 4 headless frontend for the Scented Fumes perfume store, powered by WordPress + WooCommerce GraphQL backend.
 
-First, run the development server:
+## Project Status
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+✅ **Phase 1-2:** Complete - GraphQL connection, cart store, and data fetching layer  
+✅ **Phase 3:** Complete - All content pages (Homepage, Products, Categories)  
+✅ **Phase 4:** Complete - Cart drawer and checkout flow  
+🎨 **Phase 5:** In Progress - Design transformation and polish
+
+## Quick Start
+
+1. **Environment Setup**
+   ```bash
+   cp .env.example .env.local
+   # Set NEXT_PUBLIC_WORDPRESS_API_URL=https://scentedfumes.com/graphql
+   ```
+
+2. **Install Dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Development**
+   ```bash
+   npm run dev
+   # Open http://localhost:3000
+   ```
+
+4. **Production Build**
+   ```bash
+   npm run build
+   npm run start
+   ```
+
+## Architecture
+
+### Pages (67 Total)
+- **Homepage** (`/`) - Featured products and category navigation
+- **Product Pages** (`/product/[slug]`) - 53 pre-rendered product detail pages
+- **Category Pages** (`/category/[slug]`) - 6 categories (Men, Women, Unisex, Pro, Eco, Tester)
+- **Checkout Flow** (`/checkout`, `/order-received`) - COD payment processing
+- **Static Pages** (`/about`, `/contact`, `/privacy-policy`, etc.) - 6 content pages
+
+### State & Data Layers
+
+- **Cart Store** ([src/lib/store/cartStore.ts](src/lib/store/cartStore.ts)) - Zustand with persist middleware, stores full product details in `localStorage`
+- **GraphQL Client** ([src/lib/graphql/client.ts](src/lib/graphql/client.ts)) - Singleton urql client with credentials
+- **Data Fetchers**:
+  - [src/lib/graphql/products.ts](src/lib/graphql/products.ts) - Product queries
+  - [src/lib/graphql/categories.ts](src/lib/graphql/categories.ts) - Category queries
+  - [src/lib/graphql/checkout.ts](src/lib/graphql/checkout.ts) - Checkout mutation
+- **Types** ([src/types/index.ts](src/types/index.ts), [src/types/checkout.ts](src/types/checkout.ts)) - TypeScript definitions matching WPGraphQL schema
+- **Utilities** ([src/lib/utils.ts](src/lib/utils.ts)) - `cn()` for class merging, `formatPrice()` for WooCommerce price normalization
+
+### Components
+
+- **Layout** ([src/components/layout/](src/components/layout/)) - Header with cart badge, Footer with navigation
+- **Cart** ([src/components/cart/CartDrawer.tsx](src/components/cart/CartDrawer.tsx)) - Slide-over cart with quantity management
+- **Product** ([src/components/product/AddToCartButton.tsx](src/components/product/AddToCartButton.tsx)) - Client-side add to cart
+- **Checkout** ([src/components/checkout/CheckoutForm.tsx](src/components/checkout/CheckoutForm.tsx)) - COD checkout form
+
+## Scripts
+
+- `npm run dev` - Turbopack development server
+- `npm run build` - Production build with SSG
+- `npm run start` - Serve production build
+- `npm run lint` - ESLint (Next.js + TypeScript)
+
+## Documentation
+
+- **Architecture Guide:** [.github/copilot-instructions.md](.github/copilot-instructions.md)
+- **Development Plan:** [.docs/plan.md](.docs/plan.md)
+- **Phase 2 Sitemap:** [.docs/phase-2-plan.md](.docs/phase-2-plan.md)
+
+## Tech Stack
+
+- **Framework:** Next.js 16.1.1 (App Router, Turbopack)
+- **Styling:** Tailwind CSS 4
+- **State:** Zustand with persist middleware
+- **Data:** urql GraphQL client
+- **Backend:** WordPress + WPGraphQL + WooGraphQL
+- **Deployment:** Ready for Vercel
+
+## Project Structure
+
+```
+src/
+├── app/                    # Next.js App Router pages
+│   ├── page.tsx           # Homepage
+│   ├── layout.tsx         # Root layout with Header/Footer
+│   ├── product/[slug]/    # Product detail pages
+│   ├── category/[slug]/   # Category archive pages
+│   ├── checkout/          # Checkout flow
+│   └── [static pages]/    # About, Contact, Policies
+├── components/
+│   ├── cart/              # Cart drawer
+│   ├── checkout/          # Checkout form
+│   ├── layout/            # Header, Footer
+│   └── product/           # Product components
+├── lib/
+│   ├── graphql/           # GraphQL client and queries
+│   ├── store/             # Zustand state management
+│   └── utils.ts           # Shared utilities
+└── types/                 # TypeScript definitions
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+**Next Phase:** Design transformation to match scentedfumes.com visual identity

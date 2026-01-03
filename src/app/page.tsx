@@ -1,65 +1,118 @@
 import Image from "next/image";
+import Link from "next/link";
+import { fetchProductsWithCategories } from "@/lib/graphql/products";
+import { formatPrice } from "@/lib/utils";
 
-export default function Home() {
+export const revalidate = 3600;
+
+export default async function HomePage() {
+  const { products, categories } = await fetchProductsWithCategories();
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <main className="min-h-screen bg-slate-950 px-6 py-10 text-white sm:px-10">
+      <section className="mx-auto max-w-6xl space-y-8">
+        <header className="flex flex-col gap-3 text-center sm:text-left">
+          <p className="text-sm uppercase tracking-[0.3em] text-slate-400">
+            scentedfumes
           </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+          <h1 className="text-4xl font-semibold leading-tight text-white md:text-5xl">
+            Artisanal perfumes crafted for bold stories.
+          </h1>
+          <p className="text-lg text-slate-300">
+            Every bottle is inspired by modern legends and composed to stay with you through the
+            day.
+          </p>
+        </header>
+
+        <section>
+          <div className="mb-4 flex items-center justify-between">
+            <div>
+              <h2 className="text-2xl font-semibold">Collections</h2>
+              <p className="text-sm text-slate-400">Curated by our perfumers.</p>
+            </div>
+            <Link href="/" className="text-sm font-medium text-amber-300">
+              View all
+            </Link>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {categories.map((category) => (
+              <article
+                key={category.slug}
+                className="rounded-2xl border border-white/5 bg-white/5 p-4 transition hover:border-amber-400"
+              >
+                <p className="text-sm text-slate-300">{category.slug}</p>
+                <h3 className="text-lg font-semibold">{category.name}</h3>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className="space-y-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-2xl font-semibold">Featured perfumes</h2>
+              <p className="text-sm text-slate-400">Fresh, woody, and daring.</p>
+            </div>
+            <Link href="/" className="text-sm font-medium text-amber-300">
+              Browse shop
+            </Link>
+          </div>
+
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {products.map((product) => (
+              <Link
+                key={product.id}
+                href={`/product/${product.slug}`}
+                className="group flex flex-col overflow-hidden rounded-3xl border border-white/5 bg-white/5 transition hover:border-amber-400"
+              >
+                <div className="relative h-64 w-full overflow-hidden">
+                  {product.image?.sourceUrl ? (
+                    <Image
+                      src={product.image.sourceUrl}
+                      alt={product.image.altText ?? product.name}
+                      fill
+                      className="object-cover transition duration-300 group-hover:scale-105"
+                      sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                    />
+                  ) : (
+                    <div className="flex h-full items-center justify-center bg-white/10">
+                      <span className="text-xs uppercase tracking-widest text-slate-400">
+                        No image
+                      </span>
+                    </div>
+                  )}
+                </div>
+                <div className="p-6">
+                  <p className="text-xs uppercase tracking-[0.4em] text-slate-400">
+                    {product.stockStatus === "IN_STOCK" ? "In stock" : "Out of stock"}
+                  </p>
+                  <h3 className="mt-2 text-xl font-semibold text-white">{product.name}</h3>
+                  <div className="mt-2 flex items-center gap-2">
+                    <span className="text-lg font-semibold text-white">
+                      {formatPrice(product.price)}
+                    </span>
+                    {product.regularPrice && product.regularPrice !== product.price && (
+                      <span className="text-sm text-slate-500 line-through">
+                        {formatPrice(product.regularPrice)}
+                      </span>
+                    )}
+                  </div>
+                  <div className="mt-4 flex flex-wrap gap-2 text-xs uppercase tracking-widest text-slate-400">
+                    {product.productCategories?.nodes.map((category) => (
+                      <span
+                        key={category.slug}
+                        className="rounded-full border border-white/20 px-3 py-1"
+                      >
+                        {category.name}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      </section>
+    </main>
   );
 }
