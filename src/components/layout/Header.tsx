@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useCartStore } from "@/lib/store/cartStore";
 import { useEffect, useState } from "react";
@@ -15,10 +16,10 @@ export default function Header() {
   const cartCount = mounted ? items.reduce((acc, item) => acc + item.quantity, 0) : 0;
 
   return (
-    <header className="border-b border-white/10 bg-slate-950 px-6 py-4 sm:px-10">
-      <nav className="mx-auto flex max-w-7xl items-center justify-between">
-        <Link href="/" className="text-xl font-semibold uppercase tracking-widest text-white">
-          Scented Fumes
+    <header className="absolute top-0 left-0 right-0 z-30 bg-transparent px-5 lg:px-16 py-6">
+      <nav className="mx-auto flex items-center justify-between w-full">
+        <Link href="/" className="flex items-center">
+          <Image src="/Logo.svg" alt="Scented Fumes" width={160} height={40} className="object-contain" />
         </Link>
 
         <ul className="hidden gap-8 md:flex">

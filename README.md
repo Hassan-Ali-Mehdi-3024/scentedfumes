@@ -7,7 +7,8 @@ A Next.js 16.1.1 + Tailwind CSS 4 headless frontend for the Scented Fumes perfum
 ✅ **Phase 1-2:** Complete - GraphQL connection, cart store, and data fetching layer  
 ✅ **Phase 3:** Complete - All content pages (Homepage, Products, Categories)  
 ✅ **Phase 4:** Complete - Cart drawer and checkout flow  
-🎨 **Phase 5:** In Progress - Design transformation and polish
+✅ **Phase 5:** Complete - "Modern Luxury" design system implementation  
+🎨 **Phase 6:** In Progress - Component redesign and polish
 
 ## Quick Start
 
@@ -74,10 +75,31 @@ A Next.js 16.1.1 + Tailwind CSS 4 headless frontend for the Scented Fumes perfum
 - **Development Plan:** [.docs/plan.md](.docs/plan.md)
 - **Phase 2 Sitemap:** [.docs/phase-2-plan.md](.docs/phase-2-plan.md)
 
+## Design System - "Modern Luxury"
+
+### Typography
+- **Font:** Poppins (Google Fonts)
+- **Weights:** 300 (Light), 400 (Regular), 500 (Medium), 600 (SemiBold)
+- **Strategy:** Light headings (300-400), body text (300), buttons (500)
+
+### Color Palette
+- `--bg-main`: #000000 (Pure Black)
+- `--bg-surface`: #3b1f0b (Deep Brown - cards/sections)
+- `--accent-gold`: #fdddad (Primary brand color)
+- `--text-primary`: #fdddad (Headings/highlights)
+- `--text-secondary`: #ffffff (Body text)
+- `--text-muted`: rgba(255, 255, 255, 0.6) (Meta/secondary)
+
+### Atmosphere
+- **Background:** Radial gradient from Deep Brown to Pure Black
+- **Spacing:** Mobile (`px-5`), Desktop (`px-16`) for luxury negative space
+- **Components:** Unified ProductCard with glow effects and hover animations
+
 ## Tech Stack
 
 - **Framework:** Next.js 16.1.1 (App Router, Turbopack)
-- **Styling:** Tailwind CSS 4
+- **Styling:** Tailwind CSS 4 with CSS Variables
+- **Typography:** Poppins (Modern Luxury)
 - **State:** Zustand with persist middleware
 - **Data:** urql GraphQL client
 - **Backend:** WordPress + WPGraphQL + WooGraphQL
@@ -108,4 +130,4 @@ src/
 
 ---
 
-**Next Phase:** Design transformation to match scentedfumes.com visual identity
+**Current Phase:** Component redesign - implementing Modern Luxury aesthetic across all UI elements

@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { fetchProductBySlug, fetchProductSlugs } from "@/lib/graphql/products";
 import { formatPrice } from "@/lib/utils";
 import AddToCartButton from "@/components/product/AddToCartButton";
+import ProductCard from "@/components/ui/ProductCard";
 
 export const revalidate = 3600;
 
@@ -30,8 +31,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
   const related = product.related?.nodes ?? [];
 
   return (
-    <main className="min-h-screen bg-slate-950 px-6 py-10 text-white sm:px-10">
-      <section className="mx-auto max-w-6xl space-y-10">
+    <main className="w-full flex-1 bg-slate-950 px-6 py-10 text-white sm:px-10">
+      <section className="mx-auto w-full space-y-10">
         <Link href="/" className="text-sm font-medium text-amber-300">
           ← Back to shop
         </Link>
@@ -111,33 +112,15 @@ export default async function ProductPage({ params }: ProductPageProps) {
         {related.length ? (
           <section className="space-y-4">
             <h2 className="text-2xl font-semibold">Related scents</h2>
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="flex flex-wrap justify-center gap-8">
               {related.map((relatedItem) => (
-                <Link
+                <ProductCard
                   key={relatedItem.id}
+                  title={relatedItem.name}
+                  price="View Product"
+                  imageSrc={relatedItem.image?.sourceUrl || "https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"}
                   href={`/product/${relatedItem.slug}`}
-                  className="flex items-center gap-4 rounded-2xl border border-white/5 bg-white/5 p-4 transition hover:border-amber-400"
-                >
-                  <div className="h-20 w-20 overflow-hidden rounded-2xl border border-white/10 bg-white/10">
-                    {relatedItem.image?.sourceUrl ? (
-                      <Image
-                        src={relatedItem.image.sourceUrl}
-                        alt={relatedItem.image.altText ?? relatedItem.name}
-                        width={80}
-                        height={80}
-                        className="object-cover"
-                      />
-                    ) : (
-                      <div className="flex h-full items-center justify-center text-xs uppercase tracking-[0.3em] text-slate-400">
-                        No image
-                      </div>
-                    )}
-                  </div>
-                  <div>
-                    <p className="text-sm uppercase tracking-[0.4em] text-slate-400">{relatedItem.slug}</p>
-                    <h3 className="text-lg font-semibold text-white">{relatedItem.name}</h3>
-                  </div>
-                </Link>
+                />
               ))}
             </div>
           </section>

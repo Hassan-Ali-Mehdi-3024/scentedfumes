@@ -1,8 +1,8 @@
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { fetchCategoryBySlug, fetchCategorySlugs } from "@/lib/graphql/categories";
 import { formatPrice } from "@/lib/utils";
+import ProductCard from "@/components/ui/ProductCard";
 
 export const revalidate = 3600;
 
@@ -33,8 +33,8 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
   }
 
   return (
-    <main className="min-h-screen bg-slate-950 px-6 py-10 text-white sm:px-10">
-      <div className="mx-auto max-w-7xl space-y-8">
+    <main className="w-full flex-1 bg-slate-950 px-6 py-10 text-white sm:px-10">
+      <div className="mx-auto w-full space-y-8">
         <header className="text-center">
           <h1 className="text-4xl font-semibold text-white">{category.name}</h1>
           {category.description && (
@@ -45,47 +45,15 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
           </p>
         </header>
 
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="flex flex-wrap justify-center gap-8">
           {products.map((product) => (
-            <Link
+            <ProductCard
               key={product.id}
+              title={product.name}
+              price={formatPrice(product.price)}
+              imageSrc={product.image?.sourceUrl || "https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"}
               href={`/product/${product.slug}`}
-              className="group rounded-2xl border border-white/5 bg-white/5 p-4 transition hover:border-amber-400"
-            >
-              <div className="relative mb-4 aspect-square overflow-hidden rounded-lg bg-white/5">
-                {product.image?.sourceUrl ? (
-                  <Image
-                    src={product.image.sourceUrl}
-                    alt={product.image.altText || product.name}
-                    fill
-                    className="object-cover transition group-hover:scale-105"
-                  />
-                ) : (
-                  <div className="flex h-full items-center justify-center text-sm uppercase tracking-[0.4em] text-slate-400">
-                    No image
-                  </div>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <h3 className="line-clamp-2 font-medium text-white">{product.name}</h3>
-
-                <div className="flex items-center gap-2">
-                  <span className="font-semibold text-white">
-                    {formatPrice(product.price)}
-                  </span>
-                  {product.regularPrice && product.regularPrice !== product.price && (
-                    <span className="text-sm text-slate-500 line-through">
-                      {formatPrice(product.regularPrice)}
-                    </span>
-                  )}
-                </div>
-
-                <p className="text-xs uppercase tracking-[0.3em] text-slate-400">
-                  {product.stockStatus === "IN_STOCK" ? "In stock" : "Out of stock"}
-                </p>
-              </div>
-            </Link>
+            />
           ))}
         </div>
 

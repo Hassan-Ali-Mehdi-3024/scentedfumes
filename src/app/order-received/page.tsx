@@ -13,8 +13,8 @@ export default function OrderReceivedPage() {
   }, [clearCart]);
 
   return (
-    <main className="min-h-screen bg-slate-950 px-6 py-10 text-white sm:px-10">
-      <div className="mx-auto max-w-2xl space-y-8 text-center">
+    <main className="w-full flex-1 bg-slate-950 px-6 py-10 text-white sm:px-10">
+      <div className="mx-auto w-full space-y-8 text-center">
         <div className="rounded-full bg-green-500/10 p-4 mx-auto w-20 h-20 flex items-center justify-center">
           <svg
             xmlns="http://www.w3.org/2000/svg"
