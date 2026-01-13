@@ -4,98 +4,184 @@ export const metadata = {
 };
 
 export default function RefundPolicyPage() {
+  const containerPadding = {
+    paddingTop: "clamp(1.75rem, 4vw, 3rem)",
+    paddingBottom: "clamp(2rem, 5vw, 3.25rem)",
+    paddingLeft: "clamp(1.5rem, 4vw, 2.75rem)",
+    paddingRight: "clamp(1.5rem, 4vw, 2.75rem)",
+  };
+
+  const cardPadding = {
+    paddingTop: "clamp(1.25rem, 2.8vh, 1.75rem)",
+    paddingBottom: "clamp(1.25rem, 2.8vh, 1.75rem)",
+    paddingLeft: "clamp(1.25rem, 3vw, 1.75rem)",
+    paddingRight: "clamp(1.25rem, 3vw, 1.75rem)",
+  };
+
+  const listBase = {
+    paddingTop: "clamp(0.35rem, 1vh, 0.6rem)",
+    paddingBottom: "clamp(0.35rem, 1vh, 0.6rem)",
+    paddingLeft: "clamp(1.1rem, 3vw, 1.6rem)",
+    paddingRight: "clamp(0.75rem, 2vw, 1rem)",
+    margin: 0,
+    display: "flex",
+    flexDirection: "column",
+    gap: "clamp(0.45rem, 1.1vh, 0.75rem)",
+  } as const;
+
   return (
-    <main className="w-full flex-1 bg-slate-950 px-6 py-10 text-white sm:px-10">
-      <div className="mx-auto w-full space-y-8">
-        <header className="text-center">
-          <h1 className="text-4xl font-semibold text-white">Refund Policy</h1>
-          <p className="mt-2 text-sm text-slate-400">Last updated: January 2026</p>
+    <main
+      className="flex-1 w-full bg-[var(--bg-main)] text-[var(--text-secondary)]"
+      style={{ paddingTop: "var(--header-offset, 5rem)" }}
+    >
+      <div className="w-full" style={containerPadding}>
+        <header
+          className="w-full"
+          style={{ display: "flex", flexDirection: "column", gap: "clamp(0.65rem, 1.8vh, 1rem)" }}
+        >
+          <div
+            className="inline-flex items-center rounded-full border border-[var(--accent-gold)]/30 bg-[var(--bg-surface)]/60 px-4 py-2 text-[var(--text-primary)]"
+            style={{ gap: "clamp(0.35rem, 0.9vh, 0.6rem)", fontSize: "clamp(0.8rem, 1vw, 0.95rem)", width: "fit-content", maxWidth: "100%" }}
+          >
+            <span className="h-2 w-2 rounded-full bg-[var(--accent-gold)]" />
+            Clear and fair returns
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: "clamp(0.4rem, 1vh, 0.75rem)" }}>
+            <h1
+              className="text-[var(--text-primary)]"
+              style={{
+                fontFamily: "var(--font-playfair)",
+                fontWeight: 600,
+                fontSize: "clamp(2.2rem, 4vw, 3rem)",
+                lineHeight: 1.2,
+              }}
+            >
+              Refund Policy
+            </h1>
+            <p style={{ color: "var(--text-secondary)", opacity: 0.8, fontSize: "clamp(0.95rem, 1.05vw, 1.05rem)" }}>
+              Last updated: January 2026
+            </p>
+          </div>
         </header>
 
-        <div className="space-y-6 rounded-2xl border border-white/5 bg-white/5 p-8 text-slate-300">
-          <section>
-            <h2 className="mb-4 text-xl font-semibold text-white">Return Eligibility</h2>
-            <p className="mb-2">
-              To be eligible for a return, your item must meet the following conditions:
-            </p>
-            <ul className="list-disc space-y-1 pl-6">
-              <li>Item must be unused and in its original packaging</li>
-              <li>Return request must be made within 7 days of delivery</li>
-              <li>Product seal must be intact and unbroken</li>
-              <li>Original invoice or proof of purchase must be provided</li>
-            </ul>
-          </section>
-
-          <section>
-            <h2 className="mb-4 text-xl font-semibold text-white">Non-Returnable Items</h2>
-            <p className="mb-2">The following items cannot be returned:</p>
-            <ul className="list-disc space-y-1 pl-6">
-              <li>Opened or used perfume bottles</li>
-              <li>Products without original packaging</li>
-              <li>Sale or clearance items marked as final sale</li>
-              <li>Tester products (unless defective)</li>
-            </ul>
-          </section>
-
-          <section>
-            <h2 className="mb-4 text-xl font-semibold text-white">Return Process</h2>
-            <p className="mb-2">To initiate a return:</p>
-            <ol className="list-decimal space-y-2 pl-6">
-              <li>Contact us via WhatsApp at +92 332 1300655 within 7 days of delivery</li>
-              <li>Provide your order number and reason for return</li>
-              <li>Wait for our team to approve your return request</li>
-              <li>Ship the item back to our designated address</li>
-              <li>Include the original invoice in the return package</li>
-            </ol>
-          </section>
-
-          <section>
-            <h2 className="mb-4 text-xl font-semibold text-white">Refunds</h2>
-            <p className="mb-2">
-              Once we receive and inspect your returned item, we will process your refund within 5-7 
-              business days. Refunds will be issued via:
-            </p>
-            <ul className="list-disc space-y-1 pl-6">
-              <li>Bank transfer to your provided account</li>
-              <li>Store credit (if preferred)</li>
-            </ul>
-            <p className="mt-2">
-              Please note that return shipping costs are the responsibility of the customer unless the 
-              return is due to our error or a defective product.
-            </p>
-          </section>
-
-          <section>
-            <h2 className="mb-4 text-xl font-semibold text-white">Exchanges</h2>
-            <p>
-              We currently do not offer direct exchanges. If you wish to exchange a product, please 
-              return the original item for a refund and place a new order for the desired product.
-            </p>
-          </section>
-
-          <section>
-            <h2 className="mb-4 text-xl font-semibold text-white">Damaged or Defective Products</h2>
-            <p>
-              If you receive a damaged or defective product, please contact us immediately with photos 
-              of the damage. We will arrange for a replacement or full refund at no additional cost to you.
-            </p>
-          </section>
-
-          <section>
-            <h2 className="mb-4 text-xl font-semibold text-white">Contact Us</h2>
-            <p>
-              For any questions regarding returns or refunds, please contact us at{" "}
-              <a
-                href="https://wa.me/923321300655"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-amber-300 hover:underline"
+        <section
+          className="rounded-3xl border border-[var(--accent-gold)]/20 bg-[var(--bg-surface)]/80 shadow-[0_14px_50px_rgba(0,0,0,0.28)] backdrop-blur-md"
+          style={{ ...cardPadding, marginTop: "clamp(1.25rem, 3vh, 1.75rem)" }}
+        >
+          <div style={{ display: "flex", flexDirection: "column", gap: "clamp(1rem, 2.4vh, 1.5rem)", fontSize: "clamp(0.98rem, 1.05vw, 1.06rem)", lineHeight: 1.65 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "clamp(0.4rem, 1vh, 0.65rem)" }}>
+              <h2
+                className="text-[var(--text-primary)]"
+                style={{ fontFamily: "var(--font-playfair)", fontWeight: 600, fontSize: "clamp(1.55rem, 3vw, 2.1rem)" }}
               >
-                +92 332 1300655
-              </a>
-            </p>
-          </section>
-        </div>
+                Return eligibility
+              </h2>
+              <p style={{ opacity: 0.92 }}>To qualify for a return, please ensure:</p>
+              <ul style={listBase}>
+                <li>Items are unused, sealed, and in original packaging</li>
+                <li>Return request is submitted within 7 days of delivery</li>
+                <li>Product seals remain intact</li>
+                <li>Original invoice or proof of purchase is included</li>
+              </ul>
+            </div>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: "clamp(0.4rem, 1vh, 0.65rem)" }}>
+              <h2
+                className="text-[var(--text-primary)]"
+                style={{ fontFamily: "var(--font-playfair)", fontWeight: 600, fontSize: "clamp(1.55rem, 3vw, 2.1rem)" }}
+              >
+                Non-returnable items
+              </h2>
+              <p style={{ opacity: 0.92 }}>We cannot accept returns for:</p>
+              <ul style={listBase}>
+                <li>Opened or used perfume bottles</li>
+                <li>Products missing original packaging</li>
+                <li>Sale or clearance items marked final sale</li>
+                <li>Tester products unless defective</li>
+              </ul>
+            </div>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: "clamp(0.4rem, 1vh, 0.65rem)" }}>
+              <h2
+                className="text-[var(--text-primary)]"
+                style={{ fontFamily: "var(--font-playfair)", fontWeight: 600, fontSize: "clamp(1.55rem, 3vw, 2.1rem)" }}
+              >
+                Return process
+              </h2>
+              <p style={{ opacity: 0.92 }}>To initiate a return:</p>
+              <ol
+                style={{
+                  ...listBase,
+                  listStyle: "decimal",
+                  paddingLeft: "clamp(1.25rem, 3.2vw, 1.8rem)",
+                }}
+              >
+                <li>Contact us on WhatsApp at +92 332 1300655 within 7 days of delivery</li>
+                <li>Share your order number and reason for return</li>
+                <li>Wait for our team to authorize the return and share the return address</li>
+                <li>Ship the item back with original packaging and invoice</li>
+                <li>Share the courier tracking so we can prioritize your inspection</li>
+              </ol>
+            </div>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: "clamp(0.4rem, 1vh, 0.65rem)" }}>
+              <h2
+                className="text-[var(--text-primary)]"
+                style={{ fontFamily: "var(--font-playfair)", fontWeight: 600, fontSize: "clamp(1.55rem, 3vw, 2.1rem)" }}
+              >
+                Refunds
+              </h2>
+              <p style={{ opacity: 0.92 }}>
+                After inspection, approved refunds are processed within 5–7 business days via bank transfer or store credit. Return shipping is covered by the customer unless the item is defective or the wrong product was delivered.
+              </p>
+              <ul style={listBase}>
+                <li>Bank transfer to your provided account</li>
+                <li>Store credit if you prefer to reorder</li>
+              </ul>
+            </div>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: "clamp(0.4rem, 1vh, 0.65rem)" }}>
+              <h2
+                className="text-[var(--text-primary)]"
+                style={{ fontFamily: "var(--font-playfair)", fontWeight: 600, fontSize: "clamp(1.55rem, 3vw, 2.1rem)" }}
+              >
+                Exchanges
+              </h2>
+              <p>
+                We do not process direct exchanges. Please complete a return for a refund and place a new order for the scent you want next.
+              </p>
+            </div>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: "clamp(0.4rem, 1vh, 0.65rem)" }}>
+              <h2
+                className="text-[var(--text-primary)]"
+                style={{ fontFamily: "var(--font-playfair)", fontWeight: 600, fontSize: "clamp(1.55rem, 3vw, 2.1rem)" }}
+              >
+                Damaged or defective products
+              </h2>
+              <p>
+                If your order arrives damaged or defective, contact us immediately with photos. We will arrange a replacement or full refund at no additional cost once verified.
+              </p>
+            </div>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: "clamp(0.35rem, 0.9vh, 0.55rem)" }}>
+              <h2
+                className="text-[var(--text-primary)]"
+                style={{ fontFamily: "var(--font-playfair)", fontWeight: 600, fontSize: "clamp(1.55rem, 3vw, 2.1rem)" }}
+              >
+                Contact us
+              </h2>
+              <p>
+                For any questions about returns or refunds, message us at
+                <span className="text-[var(--text-primary)]" style={{ marginLeft: "0.35rem", letterSpacing: "0.02em" }}>
+                  <a href="https://wa.me/923321300655" target="_blank" rel="noopener noreferrer">
+                    +92 332 1300655
+                  </a>
+                </span>
+              </p>
+            </div>
+          </div>
+        </section>
       </div>
     </main>
   );

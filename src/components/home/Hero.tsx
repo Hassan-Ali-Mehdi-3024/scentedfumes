@@ -1,119 +1,199 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { motion } from "framer-motion";
-import { fadeUp, staggerContainer, scaleIn } from "@/lib/animations";
+import { fadeUp, staggerContainer } from "@/lib/animations";
 
 export const Hero = () => {
   return (
-    <section className="relative min-h-[95vh] w-full flex flex-col justify-center overflow-hidden bg-[#1A1512]">
-      
-      {/* Background is now provided globally in layout.tsx; Hero content sits above it. */}
-
-      {/* --- MAIN CONTENT --- */}
-      <motion.div
-        className="relative z-10 w-full mx-auto px-6 lg:px-12 pt-28 lg:pt-24 grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center h-full"
-        initial="hidden"
-        animate="visible"
-        variants={staggerContainer}
+    <>
+      {/* MOBILE HERO */}
+      <section
+        className="relative w-full flex items-start overflow-hidden block lg:hidden"
+        style={{
+          minHeight: "100vh"
+        }}
       >
+        <div className="absolute inset-0 z-0">
+          <Image
+            src="/SBG.png"
+            alt="Hero Background Mobile"
+            fill
+            className="object-cover object-center"
+            priority
+            quality={75}
+          />
+        </div>
 
-        {/* LEFT COLUMN: Typography & CTA */}
-        <motion.div className="text-center lg:text-left flex flex-col justify-center" variants={fadeUp}>
+        <div className="absolute inset-0 z-5 pointer-events-none" style={{
+          background: "linear-gradient(to bottom, transparent 60%, rgba(0, 0, 0, 0.8) 100%)",
+        }} />
 
-          <motion.h2 className="text-sm md:text-base text-white/60 tracking-[0.2em] uppercase font-medium mb-4" variants={fadeUp}>
-            Scented Fumes
-          </motion.h2>
+        <motion.div
+          className="relative z-10 w-full"
+          style={{
+            paddingTop: "8rem",
+            paddingBottom: "3rem",
+            paddingLeft: "2rem",
+            paddingRight: "2rem",
+          }}
+          initial="hidden"
+          animate="visible"
+          variants={staggerContainer}
+        >
+          <motion.div 
+            className="flex flex-col items-center text-center"
+            variants={fadeUp}
+          >
+            <motion.div className="mb-4" variants={fadeUp}>
+              <h1>
+                <span 
+                  className="block text-[var(--accent-gold)] mb-1"
+                  style={{
+                    fontSize: "1.7rem",
+                    letterSpacing: "0.05em",
+                    fontFamily: "var(--font-playfair), serif",
+                    fontWeight: 100,
+                  }}
+                >
+                  GET THE
+                </span>
+                <span 
+                  className="block text-[var(--accent-gold)] mb-1"
+                  style={{
+                    fontSize: "1.7rem",
+                    letterSpacing: "0.05em",
+                    lineHeight: 0.4,
+                    fontFamily: "var(--font-playfair), serif",
+                    fontWeight: 100,
+                  }}
+                >
+                  SCENTED FUMES
+                </span>
+                <span 
+                  className="block text-[var(--accent-gold)]"
+                  style={{
+                    fontSize: "2.5rem",
+                    letterSpacing: "0.08em",
+                    fontFamily: "var(--font-playfair), serif",
+                    fontWeight: 800,
+                  }}
+                >
+                  EXPERIENCE
+                </span>
+              </h1>
+            </motion.div>
 
-          <motion.div variants={fadeUp} className="mb-6">
-            <h1 className="font-[family-name:var(--font-playfair)] leading-[0.9]">
-              <span className="block text-3xl md:text-4xl lg:text-5xl tracking-wide font-medium mb-1 text-white">GET THE</span>
-              <span className="block text-3xl md:text-4xl lg:text-5xl tracking-wide font-medium mb-3 text-white">SCENTED FUMES</span>
-              <span className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] via-[#b98f2a] to-[#8a6e1c]">
-                EXPERIENCE
-              </span>
-            </h1>
+            <motion.p 
+              className="text-[var(--text-primary)] font-light"
+              style={{
+                fontSize: "0.75rem",
+                maxWidth: "90%",
+                lineHeight: "1.4",
+              }}
+              variants={fadeUp}
+            >
+              Experience the scent of luxury with Scented Fumes. We craft high-quality perfume renditions capturing the essence of your favourite classic fragrances. Indulge in sophistication that's accessible and unforgettable.
+            </motion.p>
           </motion.div>
-
-          <motion.p className="text-white/80 font-light leading-relaxed mb-8" variants={fadeUp}>
-            Experience the scent of luxury with Scented Fumes. We craft high-quality perfume renditions capturing the essence of your favourite classic fragrances. Indulge in sophistication that's accessible and unforgettable.
-          </motion.p>
-
-          {/* Buttons */}
-          <motion.div className="flex gap-6 justify-center lg:justify-start items-center mb-8" variants={fadeUp}>
-            <Link href="/category/pro" className="inline-flex">
-              <span className="inline-flex items-center justify-center rounded-full border border-[#D4AF37] px-8 py-3 text-[#D4AF37] uppercase tracking-widest text-sm font-semibold hover:bg-[#D4AF37] hover:text-black transition-all">
-                Shop Pro
-              </span>
-            </Link>
-            <Link href="/category/eco" className="inline-flex">
-              <span className="inline-flex items-center justify-center rounded-full border border-white/20 bg-white/5 px-8 py-3 text-white uppercase tracking-wider text-sm font-medium hover:bg-white/6 transition-all">
-                Shop Eco
-              </span>
-            </Link>
-          </motion.div>
-
-          {/* Mobile stats are handled by TrustBar to avoid duplication; hide here. */}
-          <div className="lg:hidden mt-6" />
-
         </motion.div>
+      </section>
 
-        {/* RIGHT COLUMN: Podium + Bottles */}
-        <motion.div className="relative flex items-center justify-center lg:justify-end" variants={scaleIn}>
-          <div className="relative w-full h-[400px] lg:h-[500px]">
+      {/* DESKTOP HERO */}
+      <section
+        className="relative w-full flex items-start overflow-hidden hidden lg:flex"
+        style={{
+          minHeight: "100vh"
+        }}
+      >
+        <div className="absolute inset-0 z-0">
+          <Image
+            src="/LBG.jpg"
+            alt="Hero Background Desktop"
+            fill
+            className="object-cover object-center"
+            priority
+            quality={75}
+          />
+        </div>
 
-            {/* Podium background / radial glow */}
-            <div className="absolute inset-0 rounded-full pointer-events-none">
-              <div className="absolute -right-16 -top-12 w-[460px] h-[460px] rounded-full bg-gradient-radial from-[#D4AF37]/30 to-transparent blur-3xl opacity-90" />
-            </div>
+        <div className="absolute inset-0 z-5 pointer-events-none" style={{
+          background: "linear-gradient(to bottom, transparent 60%, rgba(0, 0, 0, 0.8) 100%)",
+        }} />
 
-            {/* Back bottle (Eco) */}
-            <motion.div className="absolute bottom-12 left-1/2 -translate-x-1/2 lg:left-auto lg:translate-x-0 lg:right-20 w-32 md:w-36 lg:w-40 transform-gpu lg:-translate-x-8 z-10" initial={{ y: 30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.7, delay: 0.1 }}>
-              <Image
-                src="/placeholder.svg"
-                alt="Eco Bottle"
-                width={300}
-                height={380}
-                className="w-full h-auto object-contain drop-shadow-[0_25px_50px_rgba(0,0,0,0.5)]"
-                priority
-              />
+        <motion.div
+          className="relative z-10 w-full"
+          style={{
+            paddingTop: "8rem",
+            paddingBottom: "8rem",
+            paddingLeft: "6rem",
+            paddingRight: "6rem",
+          }}
+          initial="hidden"
+          animate="visible"
+          variants={staggerContainer}
+        >
+          <div className="max-w-7xl mx-auto grid grid-cols-2 gap-8">
+            <motion.div 
+              className="flex flex-col justify-start text-left"
+              variants={fadeUp}
+            >
+              <motion.div className="mb-6" variants={fadeUp}>
+                <h1>
+                  <span 
+                    className="block text-[var(--accent-gold)] mb-1"
+                    style={{
+                      fontSize: "3rem",
+                      letterSpacing: "0.05em",
+                      fontFamily: "var(--font-playfair), serif",
+                      fontWeight: 100,
+                    }}
+                  >
+                    GET THE
+                  </span>
+                  <span 
+                    className="block text-[var(--accent-gold)] mb-1"
+                    style={{
+                      fontSize: "3rem",
+                      letterSpacing: "0.05em",
+                      lineHeight: 0.4,
+                      fontFamily: "var(--font-playfair), serif",
+                      fontWeight: 100,
+                    }}
+                  >
+                    SCENTED FUMES
+                  </span>
+                  <span 
+                    className="block text-[var(--accent-gold)]"
+                    style={{
+                      fontSize: "5rem",
+                      letterSpacing: "0.08em",
+                      fontFamily: "var(--font-playfair), serif",
+                      fontWeight: 800,
+                    }}
+                  >
+                    EXPERIENCE
+                  </span>
+                </h1>
+              </motion.div>
+
+              <motion.p 
+                className="text-[var(--text-primary)] font-light"
+                style={{
+                  fontSize: "1.1rem",
+                  maxWidth: "90%",
+                  lineHeight: "1.6",
+                }}
+                variants={fadeUp}
+              >
+                Experience the scent of luxury with Scented Fumes. We craft high-quality perfume renditions capturing the essence of your favourite classic fragrances. Indulge in sophistication that's accessible and unforgettable.
+              </motion.p>
             </motion.div>
 
-            {/* Front bottle (Pro) */}
-            <motion.div className="absolute bottom-0 left-1/2 -translate-x-1/2 lg:left-auto lg:translate-x-0 lg:right-0 w-40 md:w-44 lg:w-52 transform-gpu z-20" initial={{ y: 50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.8, delay: 0.2 }}>
-              <Image
-                src="/placeholder.svg"
-                alt="Pro Bottle"
-                width={380}
-                height={450}
-                className="w-full h-auto object-contain drop-shadow-[0_40px_80px_rgba(0,0,0,0.7)]"
-                priority
-              />
-            </motion.div>
+            <div />
           </div>
         </motion.div>
-
-      </motion.div>
-
-      {/* Desktop stats are provided by the TrustBar component (avoids double rendering). */}
-
-    </section>
+      </section>
+    </>
   );
 };
-
-// --- Sub-components for cleaner code ---
-
-const StatItem = ({ value, label }: { value: string, label: string }) => (
-  <div className="text-center">
-    <div className="text-3xl font-[family-name:var(--font-playfair)] text-[#D4AF37] mb-2">{value}</div>
-    <div className="text-[10px] uppercase tracking-widest text-white/70">{label}</div>
-  </div>
-);
-
-const StatItemLarge = ({ value, label }: { value: string, label: string }) => (
-  <div className="text-center w-full">
-    <div className="text-5xl font-[family-name:var(--font-playfair)] text-[#D4AF37] mb-3">{value}</div>
-    <div className="text-xs uppercase tracking-[0.2em] text-white/60">{label}</div>
-  </div>
-);

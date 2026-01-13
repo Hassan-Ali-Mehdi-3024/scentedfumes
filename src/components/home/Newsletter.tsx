@@ -1,110 +1,168 @@
-"use client";
+import React, { useState } from 'react';
+import { Facebook, Instagram, Music2, MessageCircle } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { fadeUp, staggerContainer } from '@/lib/animations';
 
-import { motion } from "framer-motion";
-import { staggerContainer, fadeUp } from "@/lib/animations";
+const ScentedFumesNewsletter = () => {
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
-export const Newsletter = () => {
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitted(true);
+  };
+
   return (
-    <section className="py-20 px-6 lg:px-12 border-t border-white/10">
-      <motion.div 
-        className="w-full mx-auto text-center"
+    <section 
+      className="w-full flex flex-col items-center justify-center text-center bg-gradient-to-b from-[#5c311b] via-[#8c512f] to-[#3d1f11]"
+      style={{
+        paddingTop: "clamp(4rem, 6vh, 6rem)",
+        paddingBottom: "clamp(4rem, 6vh, 6rem)",
+        paddingLeft: "clamp(2rem, 5vw, 6rem)",
+        paddingRight: "clamp(2rem, 5vw, 6rem)",
+      }}
+    >
+      <motion.div
+        className="w-full max-w-4xl"
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true }}
+        viewport={{ once: true, margin: "-100px" }}
         variants={staggerContainer}
       >
-        <motion.div className="mb-6" variants={fadeUp}>
-          <svg 
-            className="w-12 h-12 mx-auto text-[#D4AF37]" 
-            fill="none" 
-            stroke="currentColor" 
-            viewBox="0 0 24 24"
+        {/* Header Section */}
+        <motion.div 
+          className="flex items-center justify-center gap-4 flex-wrap mb-8"
+          style={{
+            marginBottom: "clamp(2rem, 4vh, 3rem)",
+          }}
+          variants={fadeUp}
+        >
+          <h2 
+            className="text-[#e2b18a] font-light tracking-widest uppercase"
+            style={{
+              fontSize: "clamp(1.5rem, 2.5vw, 2.5rem)",
+              letterSpacing: "0.2em",
+              fontWeight: 800,
+            }}
           >
-            <path 
-              strokeLinecap="round" 
-              strokeLinejoin="round" 
-              strokeWidth={1.5} 
-              d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" 
-            />
-          </svg>
+            Connect with Scented Fumes
+          </h2>
         </motion.div>
 
-        <motion.h2 
-          className="text-3xl lg:text-4xl text-white mb-8 font-[family-name:var(--font-playfair)]"
-          variants={fadeUp}
-        >
-          CONNECT WITH SCENTED FUMES
-        </motion.h2>
-
-        <motion.p 
-          className="text-white/80 mb-8 font-light"
-          variants={fadeUp}
-        >
-          Discover the art of fragrance with our collection of premium renditions. Immerse yourself in the aroma of luxury and elevate your style with Scented Fumes.
-        </motion.p>
-
-        <motion.form 
-          className="flex flex-col sm:flex-row gap-4 w-full mx-auto mb-8"
-          variants={fadeUp}
-        >
-          <input 
-            type="email" 
-            placeholder="Your Email Address" 
-            className="
-              flex-1 px-6 py-3 
-              bg-transparent 
-              border-b border-white/50 
-              text-white placeholder-white/50
-              focus:outline-none focus:border-[#D4AF37]
-              transition-colors
-            "
-          />
-          <button 
-            type="submit" 
-            className="
-              px-8 py-3 
-              bg-[#D4AF37] 
-              text-black 
-              uppercase tracking-widest text-sm font-semibold
-              hover:bg-[#D4AF37]/90
-              transition-colors
-              font-[family-name:var(--font-montserrat)]
-            "
+        {/* Subscription Form or Success Message */}
+        {!isSubmitted ? (
+          <motion.form 
+            className="flex flex-col sm:flex-row w-full gap-4 mb-10"
+            style={{
+              gap: "clamp(1rem, 2vw, 1.5rem)",
+              marginBottom: "clamp(2rem, 4vh, 3rem)",
+            }}
+            variants={fadeUp}
+            onSubmit={handleSubmit}
           >
-            SIGN UP
-          </button>
-        </motion.form>
+            <input
+              type="email"
+              placeholder="Your Email Address"
+              required
+              className="flex-grow bg-transparent border-b-2 border-[#e2b18a] px-4 py-3 text-[#e2b18a] placeholder-[#a67c52] outline-none focus:border-b-2 focus:border-white transition-all font-light"
+              style={{
+                fontSize: "clamp(0.95rem, 1vw, 1.1rem)",
+                borderBottom: "2px solid #e2b18a",
+              }}
+            />
+            <button 
+              type="submit"
+              className="bg-[#e2b18a] text-[#120a06] px-8 py-3 tracking-widest font-light hover:bg-white transition-colors uppercase whitespace-nowrap border-2 border-[#e2b18a] rounded-sm"
+              style={{
+                fontSize: "clamp(0.85rem, 0.95vw, 1rem)",
+                letterSpacing: "0.15em",
+                paddingLeft: "clamp(2rem, 3vw, 3rem)",
+                paddingRight: "clamp(2rem, 3vw, 3rem)",
+              }}
+            >
+              Sign Up
+            </button>
+          </motion.form>
+        ) : (
+          <motion.div
+            className="mb-10"
+            style={{
+              marginBottom: "clamp(2rem, 4vh, 3rem)",
+            }}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <p 
+              className="text-[#e2b18a] font-light tracking-widest uppercase"
+              style={{
+                fontSize: "clamp(1.2rem, 1.8vw, 1.8rem)",
+                letterSpacing: "0.15em",
+              }}
+            >
+              ✓ Successfully Signed In
+            </p>
+          </motion.div>
+        )}
 
+        {/* Description Text */}
         <motion.div 
-          className="flex justify-center gap-6"
+          className="max-w-3xl mx-auto mb-10"
+          style={{
+            marginBottom: "clamp(2rem, 4vh, 3rem)",
+          }}
           variants={fadeUp}
         >
-          {[
-            { icon: "F", href: "https://www.facebook.com/profile.php?id=61558871727344" },
-            { icon: "I", href: "https://www.instagram.com/scentedfumes.official" },
-            { icon: "T", href: "https://www.tiktok.com/@scented.fumes" },
-            { icon: "W", href: "https://wa.me/923321300655" },
-          ].map((social) => (
-            <a 
-              key={social.icon}
-              href={social.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="
-                w-10 h-10 
-                rounded-full 
-                border border-white/30 
-                flex items-center justify-center
-                text-white/70 text-sm font-bold
-                hover:border-[#D4AF37] hover:text-[#D4AF37]
-                transition-colors
-              "
-            >
-              {social.icon}
-            </a>
-          ))}
+          <p 
+            className="text-[#e2b18a] leading-relaxed font-light tracking-wide"
+            style={{
+              fontSize: "clamp(0.95rem, 1.1vw, 1.2rem)",
+              lineHeight: 1.8,
+            }}
+          >
+            Discover the art of fragrance with our collection of premium renditions. Immerse yourself in the aroma of luxury and elevate your style with Scented Fumes.
+          </p>
+        </motion.div>
+
+        {/* Social Media Icons */}
+        <motion.div 
+          className="flex items-center justify-center gap-6 flex-wrap"
+          style={{
+            gap: "clamp(1rem, 2vw, 1.5rem)",
+          }}
+          variants={fadeUp}
+        >
+          <SocialCircleIcon href="https://facebook.com/scentedfumes">
+            <Facebook size={20} fill="currentColor" stroke="none" />
+          </SocialCircleIcon>
+          <SocialCircleIcon href="https://instagram.com/scentedfumes">
+            <Instagram size={20} />
+          </SocialCircleIcon>
+          <SocialCircleIcon href="https://tiktok.com/@scentedfumes">
+            <Music2 size={20} />
+          </SocialCircleIcon>
+          <SocialCircleIcon href="https://wa.me/scentedfumes">
+            <MessageCircle size={20} fill="currentColor" stroke="none" />
+          </SocialCircleIcon>
         </motion.div>
       </motion.div>
     </section>
   );
 };
+
+// Helper component for social icons
+const SocialCircleIcon = ({ children, href }: { children: React.ReactNode; href: string }) => (
+  <a 
+    href={href}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="flex items-center justify-center rounded-full bg-[#e2b18a] text-[#3d1f11] hover:bg-white transition-colors duration-300"
+    style={{
+      width: "clamp(2.5rem, 3.5vw, 3rem)",
+      height: "clamp(2.5rem, 3.5vw, 3rem)",
+    }}
+  >
+    {children}
+  </a>
+);
+
+export default ScentedFumesNewsletter;

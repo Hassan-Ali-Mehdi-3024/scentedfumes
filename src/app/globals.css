@@ -23,6 +23,7 @@
   --color-text-muted: var(--text-muted);
 
   --font-poppins: var(--font-poppins);
+  --font-playfair: var(--font-playfair);
 }
 
 * {

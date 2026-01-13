@@ -4,62 +4,168 @@ export const metadata = {
 };
 
 export default function AboutPage() {
+  const containerPadding = {
+    paddingTop: "clamp(1.75rem, 4vw, 3rem)",
+    paddingBottom: "clamp(2rem, 5vw, 3.25rem)",
+    paddingLeft: "clamp(1.5rem, 4vw, 2.75rem)",
+    paddingRight: "clamp(1.5rem, 4vw, 2.75rem)",
+  };
+
+  const cardPadding = {
+    paddingTop: "clamp(1.25rem, 2.8vh, 1.75rem)",
+    paddingBottom: "clamp(1.25rem, 2.8vh, 1.75rem)",
+    paddingLeft: "clamp(1.25rem, 3vw, 1.75rem)",
+    paddingRight: "clamp(1.25rem, 3vw, 1.75rem)",
+  };
+
+  const stackGap = {
+    display: "flex",
+    flexDirection: "column",
+    gap: "clamp(0.85rem, 2vh, 1.25rem)",
+  } as const;
+
   return (
-    <main className="w-full flex-1 bg-slate-950 px-6 py-10 text-white sm:px-10">
-      <div className="mx-auto w-full space-y-8">
-        <header className="text-center">
-          <h1 className="text-4xl font-semibold text-white">About Us</h1>
-          <p className="mt-2 text-lg text-slate-400">
-            Well-coordinated teamwork speaks about us
-          </p>
+    <main
+      className="flex-1 w-full bg-[var(--bg-main)] text-[var(--text-secondary)]"
+      style={{ paddingTop: "var(--header-offset, 5rem)" }}
+    >
+      <div className="w-full" style={containerPadding}>
+        <header
+          className="w-full"
+          style={{ display: "flex", flexDirection: "column", gap: "clamp(0.65rem, 1.8vh, 1rem)" }}
+        >
+          <div
+            className="inline-flex items-center rounded-full border border-[var(--accent-gold)]/30 bg-[var(--bg-surface)]/60 px-4 py-2 text-[var(--text-primary)]"
+            style={{ gap: "clamp(0.35rem, 0.9vh, 0.6rem)", fontSize: "clamp(0.8rem, 1vw, 0.95rem)", width: "fit-content", maxWidth: "100%" }}
+          >
+            <span className="h-2 w-2 rounded-full bg-[var(--accent-gold)]" />
+            Crafted in Modern Luxury
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: "clamp(0.4rem, 1vh, 0.75rem)" }}>
+            <h1
+              className="text-[var(--text-primary)]"
+              style={{
+                fontFamily: "var(--font-playfair)",
+                fontWeight: 600,
+                fontSize: "clamp(2.25rem, 4vw, 3.25rem)",
+                lineHeight: 1.2,
+              }}
+            >
+              The Essence Behind Scented Fumes
+            </h1>
+            <p
+              style={{
+                color: "var(--text-secondary)",
+                opacity: 0.9,
+                fontSize: "clamp(1rem, 1.2vw, 1.1rem)",
+                maxWidth: "48ch",
+              }}
+            >
+              We reinterpret iconic perfumes with meticulous craft, pairing premium oils with slow, deliberate blending to deliver everyday indulgence that still feels rare.
+            </p>
+          </div>
         </header>
 
-        <div className="space-y-8 rounded-2xl border border-white/5 bg-white/5 p-8">
-          <section>
-            <h2 className="mb-4 text-2xl font-semibold text-white">We Love What We Do</h2>
-            <p className="text-slate-300">
-              Discover the Art of Fragrance with our collection of premium perfumes renditions. 
-              Immerse yourself in the aroma of luxury and elevate your style with Scented Fumes.
-            </p>
-          </section>
-
-          <section>
-            <h2 className="mb-4 text-2xl font-semibold text-white">About Our Online Store</h2>
-            <p className="text-slate-300 mb-4">
-              One morning, when Gregor Samsa woke from troubled dreams, he found himself transformed 
-              in his bed into a horrible vermin. He lay on his armour-like back, and if he lifted his 
-              head a little he could see his brown belly, slightly domed and divided by arches into stiff.
-            </p>
-            <p className="text-slate-300">
-              Dictumst per ante cras suscipit nascetur ullamcorper in nullam fermentum condimentum 
-              torquent iaculis reden posuere potenti viverra condimentum dictumst id tellus suspendisse 
-              convallis condimentum.
-            </p>
-          </section>
-
-          <section>
-            <h2 className="mb-4 text-2xl font-semibold text-white">Our Working Process</h2>
-            <p className="text-slate-300">
-              She packed her seven versalia, put her initial into the belt and made herself on the way. 
-              We work through every aspect at the planning stage to ensure the highest quality products 
-              for our customers.
-            </p>
-          </section>
-
-          <section>
-            <h2 className="mb-4 text-2xl font-semibold text-white">Seemingly Elegant Design</h2>
-            <div className="grid gap-8 sm:grid-cols-3">
-              <div className="text-center">
-                <div className="mb-2 text-3xl font-bold text-amber-400">2012</div>
-                <div className="text-sm uppercase tracking-wider text-slate-400">Founding Year</div>
+        <div style={{ display: "flex", flexDirection: "column", gap: "clamp(1.4rem, 3vh, 2rem)", marginTop: "clamp(1.25rem, 3vh, 1.75rem)" }}>
+          <section
+            className="rounded-3xl border border-[var(--accent-gold)]/20 bg-[var(--bg-surface)]/80 shadow-[0_14px_50px_rgba(0,0,0,0.28)] backdrop-blur-md"
+            style={cardPadding}
+          >
+            <div style={stackGap}>
+              <div style={{ display: "flex", flexDirection: "column", gap: "clamp(0.45rem, 1.1vh, 0.75rem)" }}>
+                <p className="text-[var(--accent-gold)]" style={{ fontSize: "clamp(0.9rem, 1vw, 1rem)" }}>
+                  Why we exist
+                </p>
+                <h2
+                  className="text-[var(--text-primary)]"
+                  style={{ fontFamily: "var(--font-playfair)", fontWeight: 600, fontSize: "clamp(1.6rem, 3vw, 2.2rem)" }}
+                >
+                  We love what we do
+                </h2>
               </div>
-              <div className="text-center">
-                <div className="mb-2 text-3xl font-bold text-amber-400">2000+</div>
-                <div className="text-sm uppercase tracking-wider text-slate-400">Happy Customers</div>
+              <p style={{ fontSize: "clamp(0.98rem, 1.05vw, 1.08rem)", lineHeight: 1.65, color: "var(--text-secondary)", opacity: 0.92 }}>
+                Our atelier builds modern takes on beloved fragrances using carefully sourced oils, balanced accords, and a relentless focus on longevity. Every bottle is blended in small batches so the scent you wear feels intentional, elevated, and distinctly yours.
+              </p>
+            </div>
+          </section>
+
+          <section
+            className="rounded-3xl border border-[var(--accent-gold)]/20 bg-[var(--bg-surface)]/80 shadow-[0_14px_50px_rgba(0,0,0,0.28)] backdrop-blur-md"
+            style={cardPadding}
+          >
+            <div style={{ display: "flex", flexDirection: "column", gap: "clamp(0.75rem, 1.8vh, 1.2rem)" }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: "clamp(0.35rem, 0.9vh, 0.6rem)" }}>
+                <p className="text-[var(--accent-gold)]" style={{ fontSize: "clamp(0.9rem, 1vw, 1rem)" }}>
+                  How we operate
+                </p>
+                <h2
+                  className="text-[var(--text-primary)]"
+                  style={{ fontFamily: "var(--font-playfair)", fontWeight: 600, fontSize: "clamp(1.55rem, 3vw, 2.1rem)" }}
+                >
+                  Our working process
+                </h2>
               </div>
-              <div className="text-center">
-                <div className="mb-2 text-3xl font-bold text-amber-400">750+</div>
-                <div className="text-sm uppercase tracking-wider text-slate-400">Projects Completed</div>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "clamp(1rem, 2.6vw, 1.5rem)" }}>
+                {[
+                  {
+                    title: "Source",
+                    copy: "We partner with trusted oil houses and local artisans to secure concentrated ingredients that meet our longevity and clarity standards.",
+                  },
+                  {
+                    title: "Balance",
+                    copy: "Each profile is iterated until the heart, top, and dry down stay faithful to the inspiration while wearing comfortably on skin.",
+                  },
+                  {
+                    title: "Finish",
+                    copy: "Batches rest before bottling to let accords settle. We quality check projection, sillage, and stability before release.",
+                  },
+                ].map((item) => (
+                  <div
+                    key={`process-${item.title.toLowerCase()}`}
+                    className="rounded-2xl border border-[var(--accent-gold)]/15 bg-[var(--bg-main)]/60"
+                    style={{ ...cardPadding, paddingTop: "clamp(1rem, 2.3vh, 1.4rem)", paddingBottom: "clamp(1rem, 2.3vh, 1.4rem)", display: "flex", flexDirection: "column", gap: "clamp(0.4rem, 1vh, 0.65rem)" }}
+                  >
+                    <h3 className="text-[var(--text-primary)]" style={{ fontWeight: 600, fontSize: "clamp(1.15rem, 2vw, 1.35rem)" }}>
+                      {item.title}
+                    </h3>
+                    <p style={{ lineHeight: 1.6, fontSize: "clamp(0.95rem, 1.05vw, 1.05rem)", opacity: 0.92 }}>{item.copy}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          <section
+            className="rounded-3xl border border-[var(--accent-gold)]/20 bg-[var(--bg-surface)]/80 shadow-[0_14px_50px_rgba(0,0,0,0.28)] backdrop-blur-md"
+            style={cardPadding}
+          >
+            <div style={stackGap}>
+              <div style={{ display: "flex", flexDirection: "column", gap: "clamp(0.35rem, 0.9vh, 0.6rem)" }}>
+                <p className="text-[var(--accent-gold)]" style={{ fontSize: "clamp(0.9rem, 1vw, 1rem)" }}>
+                  The promise
+                </p>
+                <h2
+                  className="text-[var(--text-primary)]"
+                  style={{ fontFamily: "var(--font-playfair)", fontWeight: 600, fontSize: "clamp(1.55rem, 3vw, 2.1rem)" }}
+                >
+                  Seemingly elegant design
+                </h2>
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "clamp(1rem, 2.6vw, 1.5rem)" }}>
+                {[{ value: "2012", label: "Founding year" }, { value: "2000+", label: "Happy customers" }, { value: "750+", label: "Batches perfected" }].map((stat) => (
+                  <div
+                    key={`stat-${stat.label.replace(/\s+/g, "-").toLowerCase()}`}
+                    className="rounded-2xl border border-[var(--accent-gold)]/15 bg-[var(--bg-main)]/60 text-center"
+                    style={{ ...cardPadding, paddingTop: "clamp(1rem, 2.3vh, 1.4rem)", paddingBottom: "clamp(1rem, 2.3vh, 1.4rem)", gap: "clamp(0.35rem, 1vh, 0.65rem)", display: "flex", flexDirection: "column", alignItems: "center" }}
+                  >
+                    <div className="text-[var(--text-primary)]" style={{ fontWeight: 600, fontSize: "clamp(1.8rem, 3vw, 2.25rem)" }}>
+                      {stat.value}
+                    </div>
+                    <div style={{ fontSize: "clamp(0.9rem, 1vw, 1.05rem)", letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--text-secondary)", opacity: 0.75 }}>
+                      {stat.label}
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           </section>

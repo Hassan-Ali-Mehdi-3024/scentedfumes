@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 export default function CheckoutForm() {
   const router = useRouter();
   const { items, clearCart } = useCartStore();
+  const totalPrice = items.reduce((acc, it) => acc + (Number(it.price) || 0) * (it.quantity || 0), 0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -84,150 +85,266 @@ export default function CheckoutForm() {
     }
   };
 
+  const sectionGap = {
+    display: "flex",
+    flexDirection: "column",
+    gap: "clamp(0.9rem, 2vh, 1.3rem)",
+  } as const;
+
+  const inputStyle = {
+    paddingTop: "clamp(0.85rem, 2vh, 1rem)",
+    paddingBottom: "clamp(0.85rem, 2vh, 1rem)",
+    paddingLeft: "clamp(1rem, 2.5vw, 1.25rem)",
+    paddingRight: "clamp(1rem, 2.5vw, 1.25rem)",
+    fontSize: "clamp(0.98rem, 1.05vw, 1.05rem)",
+  };
+
   if (items.length === 0) {
     return (
-      <div className="text-center">
-        <p className="text-slate-400">Your cart is empty.</p>
+      <div
+        className="rounded-2xl border border-[var(--accent-gold)]/15 bg-[var(--bg-main)]/60 text-center"
+        style={{
+          paddingTop: "clamp(2rem, 5vh, 3rem)",
+          paddingBottom: "clamp(2rem, 5vh, 3rem)",
+          paddingLeft: "clamp(1.5rem, 4vw, 2rem)",
+          paddingRight: "clamp(1.5rem, 4vw, 2rem)",
+        }}
+      >
+        <p
+          className="text-[var(--text-secondary)]"
+          style={{ opacity: 0.8, fontSize: "clamp(1rem, 1.1vw, 1.15rem)" }}
+        >
+          Your cart is empty. Browse our collection to find your signature scent.
+        </p>
       </div>
     );
   }
 
+  const shippingFee = totalPrice >= 3000 ? 0 : 200;
+  const finalTotal = totalPrice + shippingFee;
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-8">
+    <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "clamp(1.5rem, 3.5vh, 2.25rem)" }}>
       {error && (
-        <div className="rounded-lg bg-red-500/10 p-4 text-sm text-red-400">
+        <div
+          className="rounded-xl border border-red-400/30 bg-red-500/10 text-red-400"
+          style={{
+            paddingTop: "clamp(0.9rem, 2vh, 1.1rem)",
+            paddingBottom: "clamp(0.9rem, 2vh, 1.1rem)",
+            paddingLeft: "clamp(1.1rem, 2.8vw, 1.4rem)",
+            paddingRight: "clamp(1.1rem, 2.8vw, 1.4rem)",
+            fontSize: "clamp(0.96rem, 1.05vw, 1.05rem)",
+          }}
+        >
           {error}
         </div>
       )}
 
-      <div className="grid gap-6 sm:grid-cols-2">
-        <div className="space-y-2">
-          <label htmlFor="firstName" className="text-sm font-medium text-slate-300">
-            First Name
+      <section style={sectionGap}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "clamp(0.35rem, 0.9vh, 0.6rem)" }}>
+          <p className="text-[var(--accent-gold)]" style={{ fontSize: "clamp(0.9rem, 1vw, 1rem)" }}>
+            Billing details
+          </p>
+          <h2
+            className="text-[var(--text-primary)]"
+            style={{ fontFamily: "var(--font-playfair)", fontWeight: 600, fontSize: "clamp(1.4rem, 2.6vw, 1.9rem)" }}
+          >
+            Who is this order for?
+          </h2>
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: "clamp(1rem, 2.5vw, 1.4rem)" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "clamp(0.4rem, 1vh, 0.6rem)" }}>
+            <label htmlFor="firstName" style={{ fontSize: "clamp(0.95rem, 1.05vw, 1.05rem)", color: "var(--text-secondary)", opacity: 0.92 }}>
+              First Name
+            </label>
+            <input
+              type="text"
+              id="firstName"
+              name="firstName"
+              required
+              value={formData.firstName}
+              onChange={handleChange}
+              className="w-full rounded-xl border border-[var(--accent-gold)]/20 bg-[var(--bg-main)]/70 text-[var(--text-secondary)] outline-none transition-all duration-200 focus:border-[var(--accent-gold)]/50 focus:shadow-[0_0_15px_rgba(253,221,173,0.15)]"
+              style={inputStyle}
+            />
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: "clamp(0.4rem, 1vh, 0.6rem)" }}>
+            <label htmlFor="lastName" style={{ fontSize: "clamp(0.95rem, 1.05vw, 1.05rem)", color: "var(--text-secondary)", opacity: 0.92 }}>
+              Last Name
+            </label>
+            <input
+              type="text"
+              id="lastName"
+              name="lastName"
+              required
+              value={formData.lastName}
+              onChange={handleChange}
+              className="w-full rounded-xl border border-[var(--accent-gold)]/20 bg-[var(--bg-main)]/70 text-[var(--text-secondary)] outline-none transition-all duration-200 focus:border-[var(--accent-gold)]/50 focus:shadow-[0_0_15px_rgba(253,221,173,0.15)]"
+              style={inputStyle}
+            />
+          </div>
+        </div>
+      </section>
+
+      <section style={sectionGap}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: "clamp(1rem, 2.5vw, 1.4rem)" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "clamp(0.4rem, 1vh, 0.6rem)" }}>
+            <label htmlFor="email" style={{ fontSize: "clamp(0.95rem, 1.05vw, 1.05rem)", color: "var(--text-secondary)", opacity: 0.92 }}>
+              Email
+            </label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              required
+              value={formData.email}
+              onChange={handleChange}
+              className="w-full rounded-xl border border-[var(--accent-gold)]/20 bg-[var(--bg-main)]/70 text-[var(--text-secondary)] outline-none transition-all duration-200 focus:border-[var(--accent-gold)]/50 focus:shadow-[0_0_15px_rgba(253,221,173,0.15)]"
+              style={inputStyle}
+            />
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: "clamp(0.4rem, 1vh, 0.6rem)" }}>
+            <label htmlFor="phone" style={{ fontSize: "clamp(0.95rem, 1.05vw, 1.05rem)", color: "var(--text-secondary)", opacity: 0.92 }}>
+              Phone
+            </label>
+            <input
+              type="tel"
+              id="phone"
+              name="phone"
+              required
+              value={formData.phone}
+              onChange={handleChange}
+              className="w-full rounded-xl border border-[var(--accent-gold)]/20 bg-[var(--bg-main)]/70 text-[var(--text-secondary)] outline-none transition-all duration-200 focus:border-[var(--accent-gold)]/50 focus:shadow-[0_0_15px_rgba(253,221,173,0.15)]"
+              style={inputStyle}
+            />
+          </div>
+        </div>
+      </section>
+
+      <section style={sectionGap}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "clamp(0.35rem, 0.9vh, 0.6rem)" }}>
+          <p className="text-[var(--accent-gold)]" style={{ fontSize: "clamp(0.9rem, 1vw, 1rem)" }}>
+            Shipping address
+          </p>
+          <h2
+            className="text-[var(--text-primary)]"
+            style={{ fontFamily: "var(--font-playfair)", fontWeight: 600, fontSize: "clamp(1.4rem, 2.6vw, 1.9rem)" }}
+          >
+            Where should we deliver?
+          </h2>
+        </div>
+
+        <div style={{ display: "flex", flexDirection: "column", gap: "clamp(0.4rem, 1vh, 0.6rem)" }}>
+          <label htmlFor="address1" style={{ fontSize: "clamp(0.95rem, 1.05vw, 1.05rem)", color: "var(--text-secondary)", opacity: 0.92 }}>
+            Street Address
           </label>
           <input
             type="text"
-            id="firstName"
-            name="firstName"
+            id="address1"
+            name="address1"
             required
-            value={formData.firstName}
+            value={formData.address1}
             onChange={handleChange}
-            className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-white focus:border-amber-400 focus:outline-none"
+            className="w-full rounded-xl border border-[var(--accent-gold)]/20 bg-[var(--bg-main)]/70 text-[var(--text-secondary)] outline-none transition-all duration-200 focus:border-[var(--accent-gold)]/50 focus:shadow-[0_0_15px_rgba(253,221,173,0.15)]"
+            style={inputStyle}
           />
         </div>
-        <div className="space-y-2">
-          <label htmlFor="lastName" className="text-sm font-medium text-slate-300">
-            Last Name
-          </label>
-          <input
-            type="text"
-            id="lastName"
-            name="lastName"
-            required
-            value={formData.lastName}
-            onChange={handleChange}
-            className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-white focus:border-amber-400 focus:outline-none"
-          />
-        </div>
-      </div>
+      </section>
 
-      <div className="grid gap-6 sm:grid-cols-2">
-        <div className="space-y-2">
-          <label htmlFor="email" className="text-sm font-medium text-slate-300">
-            Email
-          </label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            required
-            value={formData.email}
-            onChange={handleChange}
-            className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-white focus:border-amber-400 focus:outline-none"
-          />
+      <section style={sectionGap}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "clamp(1rem, 2.5vw, 1.4rem)" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "clamp(0.4rem, 1vh, 0.6rem)" }}>
+            <label htmlFor="city" style={{ fontSize: "clamp(0.95rem, 1.05vw, 1.05rem)", color: "var(--text-secondary)", opacity: 0.92 }}>
+              City
+            </label>
+            <input
+              type="text"
+              id="city"
+              name="city"
+              required
+              value={formData.city}
+              onChange={handleChange}
+              className="w-full rounded-xl border border-[var(--accent-gold)]/20 bg-[var(--bg-main)]/70 text-[var(--text-secondary)] outline-none transition-all duration-200 focus:border-[var(--accent-gold)]/50 focus:shadow-[0_0_15px_rgba(253,221,173,0.15)]"
+              style={inputStyle}
+            />
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: "clamp(0.4rem, 1vh, 0.6rem)" }}>
+            <label htmlFor="state" style={{ fontSize: "clamp(0.95rem, 1.05vw, 1.05rem)", color: "var(--text-secondary)", opacity: 0.92 }}>
+              Province / State
+            </label>
+            <input
+              type="text"
+              id="state"
+              name="state"
+              required
+              value={formData.state}
+              onChange={handleChange}
+              className="w-full rounded-xl border border-[var(--accent-gold)]/20 bg-[var(--bg-main)]/70 text-[var(--text-secondary)] outline-none transition-all duration-200 focus:border-[var(--accent-gold)]/50 focus:shadow-[0_0_15px_rgba(253,221,173,0.15)]"
+              style={inputStyle}
+            />
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: "clamp(0.4rem, 1vh, 0.6rem)" }}>
+            <label htmlFor="postcode" style={{ fontSize: "clamp(0.95rem, 1.05vw, 1.05rem)", color: "var(--text-secondary)", opacity: 0.92 }}>
+              Postcode
+            </label>
+            <input
+              type="text"
+              id="postcode"
+              name="postcode"
+              required
+              value={formData.postcode}
+              onChange={handleChange}
+              className="w-full rounded-xl border border-[var(--accent-gold)]/20 bg-[var(--bg-main)]/70 text-[var(--text-secondary)] outline-none transition-all duration-200 focus:border-[var(--accent-gold)]/50 focus:shadow-[0_0_15px_rgba(253,221,173,0.15)]"
+              style={inputStyle}
+            />
+          </div>
         </div>
-        <div className="space-y-2">
-          <label htmlFor="phone" className="text-sm font-medium text-slate-300">
-            Phone
+      </section>
+
+      <section style={sectionGap}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "clamp(0.4rem, 1vh, 0.6rem)" }}>
+          <label htmlFor="country" style={{ fontSize: "clamp(0.95rem, 1.05vw, 1.05rem)", color: "var(--text-secondary)", opacity: 0.92 }}>
+            Country
           </label>
-          <input
-            type="tel"
-            id="phone"
-            name="phone"
+          <select
+            id="country"
+            name="country"
             required
-            value={formData.phone}
+            value={formData.country}
             onChange={handleChange}
-            className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-white focus:border-amber-400 focus:outline-none"
-          />
+            className="w-full rounded-xl border border-[var(--accent-gold)]/20 bg-[var(--bg-main)]/70 text-[var(--text-secondary)] outline-none transition-all duration-200 focus:border-[var(--accent-gold)]/50 focus:shadow-[0_0_15px_rgba(253,221,173,0.15)]"
+            style={inputStyle}
+          >
+            <option value="PK">Pakistan</option>
+          </select>
         </div>
-      </div>
+      </section>
 
-      <div className="space-y-2">
-        <label htmlFor="address1" className="text-sm font-medium text-slate-300">
-          Address
-        </label>
-        <input
-          type="text"
-          id="address1"
-          name="address1"
-          required
-          value={formData.address1}
-          onChange={handleChange}
-          className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-white focus:border-amber-400 focus:outline-none"
-        />
-      </div>
-
-      <div className="grid gap-6 sm:grid-cols-2">
-        <div className="space-y-2">
-          <label htmlFor="city" className="text-sm font-medium text-slate-300">
-            City
-          </label>
-          <input
-            type="text"
-            id="city"
-            name="city"
-            required
-            value={formData.city}
-            onChange={handleChange}
-            className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-white focus:border-amber-400 focus:outline-none"
-          />
+      <section
+        className="rounded-2xl border border-[var(--accent-gold)]/15 bg-[var(--bg-main)]/60"
+        style={{
+          paddingTop: "clamp(1.1rem, 2.5vh, 1.5rem)",
+          paddingBottom: "clamp(1.1rem, 2.5vh, 1.5rem)",
+          paddingLeft: "clamp(1.1rem, 2.8vw, 1.5rem)",
+          paddingRight: "clamp(1.1rem, 2.8vw, 1.5rem)",
+          display: "flex",
+          flexDirection: "column",
+          gap: "clamp(0.75rem, 1.8vh, 1.1rem)",
+        }}
+      >
+        <div style={{ display: "flex", flexDirection: "column", gap: "clamp(0.35rem, 0.9vh, 0.6rem)" }}>
+          <p className="text-[var(--accent-gold)]" style={{ fontSize: "clamp(0.9rem, 1vw, 1rem)" }}>
+            Payment
+          </p>
+          <h2
+            className="text-[var(--text-primary)]"
+            style={{ fontFamily: "var(--font-playfair)", fontWeight: 600, fontSize: "clamp(1.4rem, 2.6vw, 1.9rem)" }}
+          >
+            How will you pay?
+          </h2>
         </div>
-        <div className="space-y-2">
-          <label htmlFor="postcode" className="text-sm font-medium text-slate-300">
-            Postcode
-          </label>
-          <input
-            type="text"
-            id="postcode"
-            name="postcode"
-            required
-            value={formData.postcode}
-            onChange={handleChange}
-            className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-white focus:border-amber-400 focus:outline-none"
-          />
-        </div>
-      </div>
-
-      <div className="space-y-2">
-        <label htmlFor="country" className="text-sm font-medium text-slate-300">
-          Country
-        </label>
-        <select
-          id="country"
-          name="country"
-          required
-          value={formData.country}
-          onChange={handleChange}
-          className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-white focus:border-amber-400 focus:outline-none"
-        >
-          <option value="PK">Pakistan</option>
-          {/* Add more countries if needed */}
-        </select>
-      </div>
-
-      <div className="rounded-lg border border-white/10 bg-white/5 p-4">
-        <h3 className="mb-4 font-medium text-white">Payment Method</h3>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center" style={{ gap: "clamp(0.65rem, 1.5vw, 0.9rem)" }}>
           <input
             type="radio"
             id="cod"
@@ -235,20 +352,103 @@ export default function CheckoutForm() {
             value="cod"
             checked
             readOnly
-            className="h-4 w-4 border-slate-300 text-amber-400 focus:ring-amber-400"
+            className="h-4 w-4 accent-[var(--accent-gold)]"
           />
-          <label htmlFor="cod" className="text-sm text-slate-300">
-            Cash on Delivery
+          <label htmlFor="cod" style={{ fontSize: "clamp(0.98rem, 1.05vw, 1.06rem)", color: "var(--text-secondary)", opacity: 0.92 }}>
+            Cash on Delivery (COD)
           </label>
         </div>
-      </div>
+        <p style={{ fontSize: "clamp(0.92rem, 1vw, 1rem)", opacity: 0.75, lineHeight: 1.55 }}>
+          Pay with cash when your order is delivered. Please have the exact amount ready for a smooth handoff.
+        </p>
+      </section>
+
+      <section
+        className="rounded-2xl border border-[var(--accent-gold)]/15 bg-[var(--bg-main)]/60"
+        style={{
+          paddingTop: "clamp(1.1rem, 2.5vh, 1.5rem)",
+          paddingBottom: "clamp(1.1rem, 2.5vh, 1.5rem)",
+          paddingLeft: "clamp(1.1rem, 2.8vw, 1.5rem)",
+          paddingRight: "clamp(1.1rem, 2.8vw, 1.5rem)",
+          display: "flex",
+          flexDirection: "column",
+          gap: "clamp(0.9rem, 2vh, 1.3rem)",
+        }}
+      >
+        <div style={{ display: "flex", flexDirection: "column", gap: "clamp(0.35rem, 0.9vh, 0.6rem)" }}>
+          <p className="text-[var(--accent-gold)]" style={{ fontSize: "clamp(0.9rem, 1vw, 1rem)" }}>
+            Order summary
+          </p>
+          <h2
+            className="text-[var(--text-primary)]"
+            style={{ fontFamily: "var(--font-playfair)", fontWeight: 600, fontSize: "clamp(1.4rem, 2.6vw, 1.9rem)" }}
+          >
+            Review your order
+          </h2>
+        </div>
+
+        <div style={{ display: "flex", flexDirection: "column", gap: "clamp(0.75rem, 1.8vh, 1.1rem)" }}>
+          {items.map((item) => (
+            <div
+              key={`checkout-item-${item.databaseId || item.id}`}
+              className="flex items-center justify-between border-b border-[var(--accent-gold)]/10"
+              style={{ paddingBottom: "clamp(0.65rem, 1.5vh, 0.9rem)", gap: "clamp(0.8rem, 2vw, 1.2rem)" }}
+            >
+              <div style={{ display: "flex", flexDirection: "column", gap: "clamp(0.25rem, 0.6vh, 0.4rem)", flex: 1 }}>
+                <span style={{ fontSize: "clamp(0.98rem, 1.05vw, 1.06rem)", color: "var(--text-secondary)" }}>
+                  {item.name}
+                </span>
+                <span style={{ fontSize: "clamp(0.9rem, 1vw, 0.98rem)", opacity: 0.7 }}>
+                  Qty: {item.quantity}
+                </span>
+              </div>
+              <span className="text-[var(--text-primary)]" style={{ fontSize: "clamp(0.98rem, 1.05vw, 1.06rem)", fontWeight: 600 }}>
+                Rs {((Number(item.price) || 0) * (item.quantity || 0)).toLocaleString()}
+              </span>
+            </div>
+          ))}
+        </div>
+
+        <div style={{ display: "flex", flexDirection: "column", gap: "clamp(0.6rem, 1.4vh, 0.85rem)", paddingTop: "clamp(0.6rem, 1.5vh, 0.9rem)" }}>
+          <div className="flex items-center justify-between" style={{ fontSize: "clamp(0.96rem, 1.05vw, 1.05rem)" }}>
+            <span style={{ opacity: 0.85 }}>Subtotal</span>
+            <span>Rs {totalPrice.toLocaleString()}</span>
+          </div>
+          <div className="flex items-center justify-between" style={{ fontSize: "clamp(0.96rem, 1.05vw, 1.05rem)" }}>
+            <span style={{ opacity: 0.85 }}>Shipping</span>
+            <span className={shippingFee === 0 ? "text-[var(--accent-gold)]" : ""}>
+              {shippingFee === 0 ? "Free" : `Rs ${shippingFee}`}
+            </span>
+          </div>
+          {totalPrice < 3000 && (
+            <p style={{ fontSize: "clamp(0.88rem, 0.95vw, 0.96rem)", opacity: 0.7, lineHeight: 1.5 }}>
+              Add Rs {(3000 - totalPrice).toLocaleString()} more to unlock free shipping.
+            </p>
+          )}
+          <div
+            className="flex items-center justify-between border-t border-[var(--accent-gold)]/20 text-[var(--text-primary)]"
+            style={{ paddingTop: "clamp(0.75rem, 1.8vh, 1rem)", fontSize: "clamp(1.1rem, 1.2vw, 1.25rem)", fontWeight: 600 }}
+          >
+            <span>Total</span>
+            <span>Rs {finalTotal.toLocaleString()}</span>
+          </div>
+        </div>
+      </section>
 
       <button
         type="submit"
         disabled={isSubmitting}
-        className="w-full rounded-full bg-white py-4 text-sm font-medium uppercase tracking-widest text-black transition-colors hover:bg-slate-200 disabled:cursor-not-allowed disabled:opacity-50"
+        className="w-full rounded-full bg-[var(--accent-gold)] text-[var(--bg-main)] transition-all duration-200 hover:shadow-[0_0_25px_rgba(253,221,173,0.4)] disabled:cursor-not-allowed disabled:opacity-50"
+        style={{
+          paddingTop: "clamp(1rem, 2.4vh, 1.25rem)",
+          paddingBottom: "clamp(1rem, 2.4vh, 1.25rem)",
+          fontSize: "clamp(0.98rem, 1.05vw, 1.06rem)",
+          fontWeight: 600,
+          letterSpacing: "0.06em",
+          textTransform: "uppercase",
+        }}
       >
-        {isSubmitting ? "Processing..." : "Place Order"}
+        {isSubmitting ? "Processing your order..." : "Place Order"}
       </button>
     </form>
   );

@@ -4,166 +4,253 @@ export const metadata = {
 };
 
 export default function ContactPage() {
+  const containerPadding = {
+    paddingTop: "clamp(1.75rem, 4vw, 3rem)",
+    paddingBottom: "clamp(2rem, 5vw, 3.25rem)",
+    paddingLeft: "clamp(1.5rem, 4vw, 2.75rem)",
+    paddingRight: "clamp(1.5rem, 4vw, 2.75rem)",
+  };
+
+  const cardPadding = {
+    paddingTop: "clamp(1.25rem, 2.8vh, 1.75rem)",
+    paddingBottom: "clamp(1.25rem, 2.8vh, 1.75rem)",
+    paddingLeft: "clamp(1.25rem, 3vw, 1.75rem)",
+    paddingRight: "clamp(1.25rem, 3vw, 1.75rem)",
+  };
+
   return (
-    <main className="w-full flex-1 bg-slate-950 px-6 py-10 text-white sm:px-10">
-      <div className="mx-auto w-full space-y-8">
-        <header className="text-center">
-          <h1 className="text-4xl font-semibold text-white">Contact Us</h1>
-          <p className="mt-2 text-lg text-slate-400">
-            We'd love to hear from you
-          </p>
+    <main
+      className="flex-1 w-full bg-[var(--bg-main)] text-[var(--text-secondary)]"
+      style={{ paddingTop: "var(--header-offset, 5rem)" }}
+    >
+      <div className="w-full" style={containerPadding}>
+        <header
+          className="w-full"
+          style={{ display: "flex", flexDirection: "column", gap: "clamp(0.65rem, 1.8vh, 1rem)" }}
+        >
+          <div
+            className="inline-flex items-center rounded-full border border-[var(--accent-gold)]/30 bg-[var(--bg-surface)]/60 px-4 py-2 text-[var(--text-primary)]"
+            style={{ gap: "clamp(0.35rem, 0.9vh, 0.6rem)", fontSize: "clamp(0.8rem, 1vw, 0.95rem)", width: "fit-content", maxWidth: "100%" }}
+          >
+            <span className="h-2 w-2 rounded-full bg-[var(--accent-gold)]" />
+            We would love to hear from you
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: "clamp(0.4rem, 1vh, 0.75rem)" }}>
+            <h1
+              className="text-[var(--text-primary)]"
+              style={{
+                fontFamily: "var(--font-playfair)",
+                fontWeight: 600,
+                fontSize: "clamp(2.2rem, 4vw, 3rem)",
+                lineHeight: 1.2,
+              }}
+            >
+              Contact Scented Fumes
+            </h1>
+            <p
+              style={{
+                color: "var(--text-secondary)",
+                opacity: 0.9,
+                fontSize: "clamp(1rem, 1.2vw, 1.1rem)",
+                maxWidth: "50ch",
+              }}
+            >
+              Share your questions, feedback, or scent stories. Our team replies promptly on business days and keeps every conversation personal.
+            </p>
+          </div>
         </header>
 
-        <div className="grid gap-8 lg:grid-cols-2">
-          <div className="rounded-2xl border border-white/5 bg-white/5 p-8">
-            <h2 className="mb-6 text-2xl font-semibold text-white">Get in Touch</h2>
-            <form className="space-y-4">
-              <div>
-                <label htmlFor="name" className="mb-2 block text-sm text-slate-300">
-                  Your Name
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  required
-                  className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-white focus:border-amber-400 focus:outline-none"
-                />
+        <div
+          className="grid"
+          style={{ gap: "clamp(1.4rem, 3vh, 2rem)", marginTop: "clamp(1.25rem, 3vh, 1.75rem)", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))" }}
+        >
+          <div
+            className="rounded-3xl border border-[var(--accent-gold)]/20 bg-[var(--bg-surface)]/80 shadow-[0_14px_50px_rgba(0,0,0,0.28)] backdrop-blur-md"
+            style={cardPadding}
+          >
+            <div style={{ display: "flex", flexDirection: "column", gap: "clamp(1rem, 2.2vh, 1.4rem)" }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: "clamp(0.35rem, 0.9vh, 0.6rem)" }}>
+                <p className="text-[var(--accent-gold)]" style={{ fontSize: "clamp(0.9rem, 1vw, 1rem)" }}>
+                  Get in touch
+                </p>
+                <h2
+                  className="text-[var(--text-primary)]"
+                  style={{ fontFamily: "var(--font-playfair)", fontWeight: 600, fontSize: "clamp(1.6rem, 3vw, 2.1rem)" }}
+                >
+                  Send us a note
+                </h2>
               </div>
 
-              <div>
-                <label htmlFor="email" className="mb-2 block text-sm text-slate-300">
-                  Your Email
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  required
-                  className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-white focus:border-amber-400 focus:outline-none"
-                />
-              </div>
+              <form style={{ display: "flex", flexDirection: "column", gap: "clamp(0.9rem, 2vh, 1.2rem)" }}>
+                {[
+                  { id: "name", label: "Your Name", type: "text", required: true },
+                  { id: "email", label: "Your Email", type: "email", required: true },
+                  { id: "phone", label: "Phone Number", type: "tel", required: false },
+                  { id: "company", label: "Company (optional)", type: "text", required: false },
+                ].map((field) => (
+                  <div key={`contact-${field.id}`} style={{ display: "flex", flexDirection: "column", gap: "clamp(0.35rem, 0.9vh, 0.55rem)" }}>
+                    <label htmlFor={field.id} style={{ fontSize: "clamp(0.9rem, 1vw, 1rem)", color: "var(--text-secondary)", opacity: 0.9 }}>
+                      {field.label}
+                    </label>
+                    <input
+                      id={field.id}
+                      name={field.id}
+                      type={field.type}
+                      required={field.required}
+                      className="rounded-xl border border-[var(--accent-gold)]/20 bg-[var(--bg-main)]/70 text-[var(--text-secondary)] outline-none"
+                      style={{
+                        paddingTop: "clamp(0.75rem, 1.8vh, 0.95rem)",
+                        paddingBottom: "clamp(0.75rem, 1.8vh, 0.95rem)",
+                        paddingLeft: "clamp(0.9rem, 2.5vw, 1.1rem)",
+                        paddingRight: "clamp(0.9rem, 2.5vw, 1.1rem)",
+                        fontSize: "clamp(0.95rem, 1.05vw, 1.05rem)",
+                        transition: "border-color 0.2s ease, box-shadow 0.2s ease",
+                      }}
+                    />
+                  </div>
+                ))}
 
-              <div>
-                <label htmlFor="phone" className="mb-2 block text-sm text-slate-300">
-                  Phone Number
-                </label>
-                <input
-                  type="tel"
-                  id="phone"
-                  name="phone"
-                  className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-white focus:border-amber-400 focus:outline-none"
-                />
-              </div>
+                <div style={{ display: "flex", flexDirection: "column", gap: "clamp(0.35rem, 0.9vh, 0.55rem)" }}>
+                  <label htmlFor="message" style={{ fontSize: "clamp(0.9rem, 1vw, 1rem)", color: "var(--text-secondary)", opacity: 0.9 }}>
+                    Your Message
+                  </label>
+                  <textarea
+                    id="message"
+                    name="message"
+                    required
+                    rows={4}
+                    className="rounded-xl border border-[var(--accent-gold)]/20 bg-[var(--bg-main)]/70 text-[var(--text-secondary)] outline-none"
+                    style={{
+                      paddingTop: "clamp(0.9rem, 2.2vh, 1.05rem)",
+                      paddingBottom: "clamp(0.9rem, 2.2vh, 1.05rem)",
+                      paddingLeft: "clamp(0.9rem, 2.5vw, 1.1rem)",
+                      paddingRight: "clamp(0.9rem, 2.5vw, 1.1rem)",
+                      fontSize: "clamp(0.95rem, 1.05vw, 1.05rem)",
+                      minHeight: "clamp(8rem, 18vh, 10rem)",
+                      transition: "border-color 0.2s ease, box-shadow 0.2s ease",
+                    }}
+                  />
+                </div>
 
-              <div>
-                <label htmlFor="company" className="mb-2 block text-sm text-slate-300">
-                  Company (Optional)
-                </label>
-                <input
-                  type="text"
-                  id="company"
-                  name="company"
-                  className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-white focus:border-amber-400 focus:outline-none"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="message" className="mb-2 block text-sm text-slate-300">
-                  Your Message
-                </label>
-                <textarea
-                  id="message"
-                  name="message"
-                  rows={4}
-                  required
-                  className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-white focus:border-amber-400 focus:outline-none"
-                />
-              </div>
-
-              <button
-                type="submit"
-                className="w-full rounded-full bg-white px-8 py-3 text-sm font-medium uppercase tracking-widest text-black transition-colors hover:bg-slate-200"
-              >
-                Send Message
-              </button>
-            </form>
+                <button
+                  type="submit"
+                  className="rounded-full bg-[var(--accent-gold)] text-[var(--bg-main)]"
+                  style={{
+                    paddingTop: "clamp(0.85rem, 2vh, 1rem)",
+                    paddingBottom: "clamp(0.85rem, 2vh, 1rem)",
+                    paddingLeft: "clamp(1.25rem, 3vw, 1.5rem)",
+                    paddingRight: "clamp(1.25rem, 3vw, 1.5rem)",
+                    fontSize: "clamp(0.95rem, 1.05vw, 1.05rem)",
+                    fontWeight: 600,
+                    letterSpacing: "0.06em",
+                    textTransform: "uppercase",
+                    width: "100%",
+                    boxShadow: "0 0 20px rgba(253,221,173,0.3)",
+                  }}
+                >
+                  Send message
+                </button>
+              </form>
+            </div>
           </div>
 
-          <div className="space-y-6">
-            <div className="rounded-2xl border border-white/5 bg-white/5 p-8">
-              <h2 className="mb-4 text-xl font-semibold text-white">Contact Information</h2>
-              <div className="space-y-4 text-slate-300">
-                <div>
-                  <h3 className="font-medium text-white">WhatsApp</h3>
-                  <a
-                    href="https://wa.me/923321300655"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-amber-300 hover:underline"
+          <div style={{ display: "flex", flexDirection: "column", gap: "clamp(1rem, 2.4vh, 1.4rem)" }}>
+            <div
+              className="rounded-3xl border border-[var(--accent-gold)]/20 bg-[var(--bg-surface)]/80 shadow-[0_14px_50px_rgba(0,0,0,0.28)] backdrop-blur-md"
+              style={cardPadding}
+            >
+              <div style={{ display: "flex", flexDirection: "column", gap: "clamp(0.8rem, 1.9vh, 1.2rem)" }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: "clamp(0.35rem, 0.9vh, 0.6rem)" }}>
+                  <p className="text-[var(--accent-gold)]" style={{ fontSize: "clamp(0.9rem, 1vw, 1rem)" }}>
+                    Contact information
+                  </p>
+                  <h2
+                    className="text-[var(--text-primary)]"
+                    style={{ fontFamily: "var(--font-playfair)", fontWeight: 600, fontSize: "clamp(1.4rem, 2.6vw, 1.9rem)" }}
                   >
-                    +92 332 1300655
-                  </a>
+                    Reach us directly
+                  </h2>
                 </div>
-                <div>
-                  <h3 className="font-medium text-white">Social Media</h3>
-                  <div className="mt-2 flex gap-4">
+                <div style={{ display: "flex", flexDirection: "column", gap: "clamp(0.65rem, 1.6vh, 0.95rem)", fontSize: "clamp(0.98rem, 1.05vw, 1.08rem)" }}>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "clamp(0.25rem, 0.7vh, 0.45rem)" }}>
+                    <span className="text-[var(--text-primary)]" style={{ fontWeight: 600 }}>WhatsApp</span>
                     <a
-                      href="https://www.facebook.com/profile.php?id=61558871727344"
+                      href="https://wa.me/923321300655"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-slate-400 transition hover:text-white"
+                      className="text-[var(--text-primary)]"
+                      style={{ textDecoration: "none", letterSpacing: "0.02em" }}
                     >
-                      Facebook
+                      +92 332 1300655
                     </a>
-                    <a
-                      href="https://www.instagram.com/scentedfumes.official"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-slate-400 transition hover:text-white"
-                    >
-                      Instagram
-                    </a>
-                    <a
-                      href="https://www.tiktok.com/@scented.fumes"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-slate-400 transition hover:text-white"
-                    >
-                      TikTok
-                    </a>
+                  </div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "clamp(0.25rem, 0.7vh, 0.45rem)" }}>
+                    <span className="text-[var(--text-primary)]" style={{ fontWeight: 600 }}>Social</span>
+                    <div style={{ display: "flex", gap: "clamp(0.6rem, 1.4vw, 0.9rem)", flexWrap: "wrap" }}>
+                      {[{
+                        label: "Facebook",
+                        href: "https://www.facebook.com/profile.php?id=61558871727344",
+                      },
+                      { label: "Instagram", href: "https://www.instagram.com/scentedfumes.official" },
+                      { label: "TikTok", href: "https://www.tiktok.com/@scented.fumes" }].map((link) => (
+                        <a
+                          key={`social-${link.label.toLowerCase()}`}
+                          href={link.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[var(--text-secondary)]"
+                          style={{ opacity: 0.85, transition: "opacity 0.2s ease" }}
+                        >
+                          {link.label}
+                        </a>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="rounded-2xl border border-white/5 bg-white/5 p-8">
-              <h2 className="mb-4 text-xl font-semibold text-white">Frequently Asked Questions</h2>
-              <div className="space-y-4 text-sm">
-                <details className="group">
-                  <summary className="cursor-pointer font-medium text-white">
-                    Will I receive the same product that I see in the picture?
-                  </summary>
-                  <p className="mt-2 text-slate-300">
-                    Yes, we ensure that the product you receive matches the images shown on our website.
+            <div
+              className="rounded-3xl border border-[var(--accent-gold)]/20 bg-[var(--bg-surface)]/80 shadow-[0_14px_50px_rgba(0,0,0,0.28)] backdrop-blur-md"
+              style={cardPadding}
+            >
+              <div style={{ display: "flex", flexDirection: "column", gap: "clamp(0.8rem, 1.9vh, 1.2rem)" }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: "clamp(0.35rem, 0.9vh, 0.6rem)" }}>
+                  <p className="text-[var(--accent-gold)]" style={{ fontSize: "clamp(0.9rem, 1vw, 1rem)" }}>
+                    FAQs
                   </p>
-                </details>
-                <details className="group">
-                  <summary className="cursor-pointer font-medium text-white">
-                    How can I return an item?
-                  </summary>
-                  <p className="mt-2 text-slate-300">
-                    Please refer to our Refund Policy page for detailed information about returns.
-                  </p>
-                </details>
-                <details className="group">
-                  <summary className="cursor-pointer font-medium text-white">
-                    Where can I ship my order?
-                  </summary>
-                  <p className="mt-2 text-slate-300">
-                    We currently ship across Pakistan. Please check our Shipping Policy for more details.
-                  </p>
-                </details>
+                  <h2
+                    className="text-[var(--text-primary)]"
+                    style={{ fontFamily: "var(--font-playfair)", fontWeight: 600, fontSize: "clamp(1.4rem, 2.6vw, 1.9rem)" }}
+                  >
+                    Quick answers
+                  </h2>
+                </div>
+                <div style={{ display: "flex", flexDirection: "column", gap: "clamp(0.75rem, 1.9vh, 1.15rem)", fontSize: "clamp(0.96rem, 1.05vw, 1.05rem)" }}>
+                  {[{
+                    question: "Will I receive the same product shown?",
+                    answer: "Yes. We quality check imagery against every batch and photograph in-house before publishing.",
+                  },
+                  {
+                    question: "How can I return an item?",
+                    answer: "Review our Refund Policy for eligibility, then reach out on WhatsApp so we can authorize and guide the pickup.",
+                  },
+                  {
+                    question: "Where do you ship?",
+                    answer: "We deliver across Pakistan. Delivery times vary slightly by city—see the Shipping Policy for the latest schedule.",
+                  }].map((item) => (
+                    <details
+                      key={`faq-${item.question.toLowerCase().replace(/\s+/g, "-")}`}
+                      className="group rounded-2xl border border-[var(--accent-gold)]/15 bg-[var(--bg-main)]/60"
+                      style={{ padding: "clamp(0.9rem, 2.2vh, 1.1rem)", display: "flex", flexDirection: "column", gap: "clamp(0.35rem, 0.9vh, 0.55rem)" }}
+                    >
+                      <summary className="cursor-pointer text-[var(--text-primary)]" style={{ fontWeight: 600 }}>
+                        {item.question}
+                      </summary>
+                      <p style={{ lineHeight: 1.55, opacity: 0.9 }}>{item.answer}</p>
+                    </details>
+                  ))}
+                </div>
               </div>
             </div>
           </div>

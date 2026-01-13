@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 interface ProductCardProps {
   title?: string;
@@ -17,63 +18,106 @@ const ProductCard: React.FC<ProductCardProps> = ({
   className = "" 
 }) => {
   const content = (
-    <div className={`group relative h-[320px] w-[220px] ${className}`}>
-      
-      {/* 1. The Glow Effect 
-          - Uses accent-gold variable
-          - Fades out on hover (opacity-0) to mimic your original effect
-      */}
-      <div className="absolute -inset-0.5 -z-10 rounded-2xl bg-[var(--accent-gold)] opacity-40 blur-[15px] transition-opacity duration-500 group-hover:opacity-0" />
+    <div 
+      className={`group relative ${className}`}
+      style={{
+        width: "220px",
+        height: "360px",
+      }}
+    >
+      {/* Hover Glow Effect */}
+      <div 
+        className="absolute rounded-2xl bg-[var(--accent-gold)] opacity-0 blur-xl transition-opacity duration-500 group-hover:opacity-30"
+        style={{
+          inset: "-4px",
+          zIndex: -1,
+        }}
+      />
 
-      {/* 2. The Main Card Container 
-          - Background: bg-surface (Deep Brown)
-          - Border: accent-gold
-      */}
-      <div className="relative z-10 flex h-full w-full flex-col overflow-hidden rounded-2xl border border-[var(--accent-gold)] bg-[var(--bg-surface)] shadow-xl">
-        
-        {/* 3. Image Section (65% height) */}
-        <div className="relative h-[65%] w-full overflow-hidden border-b border-[var(--accent-gold)]/20">
-            {/* Image hover effect: subtle zoom */}
-            <img 
+      {/* Main Card Container */}
+      <div
+        className="relative flex h-full w-full flex-col overflow-hidden rounded-2xl border border-[var(--accent-gold)]/20 bg-[var(--bg-surface)] transition-all duration-300 group-hover:border-[var(--accent-gold)]/40 group-hover:shadow-[0_20px_60px_rgba(0,0,0,0.4)]"
+        style={{
+          boxShadow: "0 14px 50px rgba(0, 0, 0, 0.28)",
+        }}
+      >
+        {/* Image Section */}
+        <div 
+          className="relative overflow-hidden border-b border-[var(--accent-gold)]/15"
+          style={{
+            height: "60%",
+            width: "100%",
+          }}
+        >
+          <div className="relative h-full w-full">
+            <Image 
               src={imageSrc} 
               alt={title} 
-              className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+              fill
+              className="object-cover transition-transform duration-700 group-hover:scale-110"
             />
+            {/* Gradient overlay on hover */}
+            <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-surface)]/60 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+          </div>
         </div>
 
-        {/* 4. Content Section */}
-        <div className="flex h-[35%] flex-col justify-between p-3">
-          
+        {/* Content Section */}
+        <div
+          style={{
+            height: "40%",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            padding: "clamp(0.75rem, 1.5vh, 1rem)",
+            gap: "clamp(0.6rem, 1.2vh, 0.9rem)",
+          }}
+        >
           {/* Title & Price */}
-          <div>
-            <h3 className="truncate text-sm font-bold uppercase tracking-wider text-[var(--text-primary)]">
+          <div style={{ display: "flex", flexDirection: "column", gap: "clamp(0.25rem, 0.5vh, 0.35rem)" }}>
+            <h3
+              className="text-[var(--text-primary)] uppercase tracking-wider line-clamp-2 leading-tight"
+              style={{
+                fontSize: "clamp(0.75rem, 0.9vw, 0.85rem)",
+                fontWeight: 600,
+                letterSpacing: "0.05em",
+              }}
+            >
               {title}
             </h3>
-            <p className="mt-1 text-xs font-medium text-[var(--text-secondary)]/90">
+            <p
+              className="text-[var(--accent-gold)] font-semibold"
+              style={{
+                fontSize: "clamp(0.8rem, 0.95vw, 0.9rem)",
+              }}
+            >
               {price}
             </p>
           </div>
 
-          {/* Button 
-              - Primary Color: accent-gold
-              - Text Color: bg-surface (for contrast)
-              - Hover: bg-white with text-surface
-          */}
-          <button className="group/btn flex w-full items-center justify-center gap-2 rounded-md bg-[var(--accent-gold)] py-1.5 text-xs font-bold text-[var(--bg-surface)] transition-all hover:bg-white active:scale-95">
+          {/* View Button */}
+          <button
+            className="group/btn flex w-full items-center justify-center rounded-lg bg-[var(--accent-gold)] text-[var(--bg-surface)] transition-all hover:bg-[var(--accent-gold)]/90 hover:shadow-[0_0_20px_rgba(253,221,173,0.4)] active:scale-95"
+            style={{
+              padding: "clamp(0.45rem, 0.9vh, 0.6rem)",
+              gap: "0.5rem",
+              fontSize: "clamp(0.7rem, 0.85vw, 0.8rem)",
+              fontWeight: 700,
+              letterSpacing: "0.12em",
+            }}
+          >
             VIEW
-            {/* SVG Arrow */}
             <svg 
               xmlns="http://www.w3.org/2000/svg" 
               fill="none" 
               viewBox="0 0 24 24" 
               strokeWidth={2.5} 
               stroke="currentColor" 
-              className="h-3 w-3 transition-transform duration-300 group-hover/btn:translate-x-1"
+              className="transition-transform duration-300 group-hover/btn:translate-x-1"
+              style={{ width: "0.85rem", height: "0.85rem" }}
             >
               <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
             </svg>
           </button>
-
         </div>
       </div>
     </div>
