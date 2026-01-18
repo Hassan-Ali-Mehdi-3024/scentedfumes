@@ -8,7 +8,15 @@ import Newsletter from "@/components/home/Newsletter";
 
 export default function HomePage() {
   return (
-    <main className="bg-[#1A1512] w-full flex-1 px-5 lg:px-16 py-6 sm:py-10">
+    <main 
+      className="w-full flex-1 bg-[var(--bg-main)]"
+      style={{
+        paddingTop: "clamp(1.5rem, 3vh, 2.5rem)",
+        paddingBottom: "clamp(1.5rem, 3vh, 2.5rem)",
+        paddingLeft: "clamp(2rem, 5vw, 6rem)",
+        paddingRight: "clamp(2rem, 5vw, 6rem)",
+      }}
+    >
       <Hero />
       <TrustBar />
       <GenderSection />

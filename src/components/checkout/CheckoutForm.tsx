@@ -5,14 +5,19 @@ import { useRouter } from "next/navigation";
 import { useCartStore } from "@/lib/store/cartStore";
 import { processCheckout } from "@/lib/graphql/checkout";
 import { CheckoutInput } from "@/types/checkout";
-import { cn } from "@/lib/utils";
+import { cn, extractNumericPrice } from "@/lib/utils";
 
 export default function CheckoutForm() {
   const router = useRouter();
   const { items, clearCart } = useCartStore();
-  const totalPrice = items.reduce((acc, it) => acc + (Number(it.price) || 0) * (it.quantity || 0), 0);
+  const totalPrice = items.reduce((acc, it) => acc + extractNumericPrice(it.price) * (it.quantity || 0), 0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [successData, setSuccessData] = useState<{
+    orderNumber: string;
+    total: string;
+    status: string;
+  } | null>(null);
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -35,6 +40,51 @@ export default function CheckoutForm() {
     e.preventDefault();
     setIsSubmitting(true);
     setError(null);
+    setSuccessData(null);
+
+    // Comprehensive client-side validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      setError('Please enter a valid email address (e.g., name@example.com).');
+      setIsSubmitting(false);
+      return;
+    }
+
+    // Validate phone: remove spaces/dashes and check length
+    const cleanPhone = formData.phone.replace(/[\s-]/g, '');
+    if (cleanPhone.length < 10 || !/^[0-9+]+$/.test(cleanPhone)) {
+      setError('Please enter a valid phone number (at least 10 digits, numbers only).');
+      setIsSubmitting(false);
+      return;
+    }
+
+    // Validate required fields
+    if (!formData.firstName.trim() || !formData.lastName.trim()) {
+      setError('First name and last name are required.');
+      setIsSubmitting(false);
+      return;
+    }
+
+    if (!formData.address1.trim() || !formData.city.trim() || !formData.postcode.trim()) {
+      setError('Complete address (street, city, postcode) is required.');
+      setIsSubmitting(false);
+      return;
+    }
+
+    // Validate cart has items with valid prices
+    if (items.length === 0) {
+      setError('Your cart is empty. Please add items before checkout.');
+      setIsSubmitting(false);
+      return;
+    }
+
+    // Validate all items have valid databaseId (required by backend)
+    const invalidItems = items.filter(item => !item.databaseId || item.databaseId <= 0);
+    if (invalidItems.length > 0) {
+      setError('Some items in your cart are invalid. Please refresh and try again.');
+      setIsSubmitting(false);
+      return;
+    }
 
     try {
       const input: CheckoutInput = {
@@ -60,26 +110,63 @@ export default function CheckoutForm() {
           country: formData.country,
         },
         shipToDifferentAddress: false,
-        paymentMethod: "cod", // Hardcoded for now
+        paymentMethod: "cod",
         isPaid: false,
-        lineItems: items.map((item) => ({
-          productId: item.databaseId,
-          quantity: item.quantity,
-        })),
       };
 
-      const result = await processCheckout(input);
+      // Prepare cart items for WooCommerce
+      const cartItems = items.map((item) => ({
+        productId: item.databaseId,
+        quantity: item.quantity,
+      }));
 
-      if (result?.result === "success") {
+      const result = await processCheckout(input, cartItems);
+
+      if (result?.result === "success" && result?.order) {
+        // Show success confirmation with order details
+        setSuccessData({
+          orderNumber: result.order.orderNumber || 'N/A',
+          total: result.order.total || 'N/A',
+          status: result.order.status || 'Processing',
+        });
+        
+        // Clear cart
         clearCart();
-        // Redirect to order received page
-        router.push("/order-received");
+        
+        // Redirect after showing success message (3 seconds)
+        setTimeout(() => {
+          router.push("/order-received");
+        }, 3000);
       } else {
-        setError("Checkout failed. Please try again.");
+        // Handle unsuccessful checkout
+        setError(`Checkout unsuccessful. Status: ${result?.result || 'Unknown'}. Please contact support or try again.`);
       }
-    } catch (err) {
-      console.error(err);
-      setError("An error occurred during checkout.");
+    } catch (err: any) {
+      console.error('Checkout error:', err);
+      
+      // Parse error message for detailed feedback
+      let errorMessage = 'An error occurred during checkout. ';
+      
+      if (err?.message) {
+        // Check for specific error types
+        if (err.message.includes('network') || err.message.includes('fetch')) {
+          errorMessage += 'Network connection issue. Please check your internet and try again.';
+        } else if (err.message.includes('email')) {
+          errorMessage += 'Invalid email address provided.';
+        } else if (err.message.includes('phone')) {
+          errorMessage += 'Invalid phone number provided.';
+        } else if (err.message.includes('address')) {
+          errorMessage += 'Invalid address information. Please verify all fields.';
+        } else if (err.message.includes('product')) {
+          errorMessage += 'One or more products in your cart are unavailable.';
+        } else {
+          errorMessage += err.message;
+        }
+      } else {
+        errorMessage += 'Please verify your information and try again, or contact support.';
+      }
+      
+      setError(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
@@ -124,7 +211,201 @@ export default function CheckoutForm() {
   const finalTotal = totalPrice + shippingFee;
 
   return (
-    <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "clamp(1.5rem, 3.5vh, 2.25rem)" }}>
+    <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "clamp(1.5rem, 3.5vh, 2.25rem)", position: "relative" }}>
+      {/* Loading Overlay */}
+      {isSubmitting && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0, 0, 0, 0.8)",
+            backdropFilter: "blur(8px)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 9999,
+            flexDirection: "column",
+            gap: "clamp(1rem, 2.5vh, 1.5rem)",
+          }}
+        >
+          <div
+            style={{
+              width: "clamp(3rem, 8vw, 4rem)",
+              height: "clamp(3rem, 8vw, 4rem)",
+              border: "3px solid var(--accent-gold)",
+              borderTopColor: "transparent",
+              borderRadius: "50%",
+              animation: "spin 1s linear infinite",
+            }}
+          />
+          <p
+            className="text-[var(--accent-gold)]"
+            style={{
+              fontSize: "clamp(1rem, 1.1vw, 1.15rem)",
+              fontWeight: 500,
+              letterSpacing: "0.05em",
+            }}
+          >
+            Processing your order...
+          </p>
+          <style jsx>{`
+            @keyframes spin {
+              to { transform: rotate(360deg); }
+            }
+          `}</style>
+        </div>
+      )}
+
+      {/* Success Confirmation Modal */}
+      {successData && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0, 0, 0, 0.9)",
+            backdropFilter: "blur(12px)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 9999,
+            padding: "clamp(1.5rem, 4vw, 2rem)",
+          }}
+        >
+          <div
+            className="rounded-2xl border border-[var(--accent-gold)]/30 bg-[var(--bg-surface)]"
+            style={{
+              maxWidth: "500px",
+              width: "100%",
+              paddingTop: "clamp(1.5rem, 4vh, 2rem)",
+              paddingBottom: "clamp(1.5rem, 4vh, 2rem)",
+              paddingLeft: "clamp(1.5rem, 4vw, 2rem)",
+              paddingRight: "clamp(1.5rem, 4vw, 2rem)",
+              display: "flex",
+              flexDirection: "column",
+              gap: "clamp(1.2rem, 3vh, 1.8rem)",
+              boxShadow: "0 20px 60px rgba(0, 0, 0, 0.5)",
+            }}
+          >
+            {/* Success Icon */}
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              <div
+                style={{
+                  width: "clamp(3.5rem, 10vw, 5rem)",
+                  height: "clamp(3.5rem, 10vw, 5rem)",
+                  borderRadius: "50%",
+                  backgroundColor: "var(--accent-gold)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: "clamp(1.8rem, 5vw, 2.5rem)",
+                }}
+              >
+                ✓
+              </div>
+            </div>
+
+            {/* Success Message */}
+            <div style={{ textAlign: "center", display: "flex", flexDirection: "column", gap: "clamp(0.5rem, 1.2vh, 0.8rem)" }}>
+              <h2
+                className="text-[var(--text-primary)]"
+                style={{
+                  fontFamily: "var(--font-playfair)",
+                  fontWeight: 600,
+                  fontSize: "clamp(1.5rem, 2.8vw, 2rem)",
+                }}
+              >
+                Order Placed Successfully!
+              </h2>
+              <p
+                className="text-[var(--text-secondary)]"
+                style={{
+                  fontSize: "clamp(0.95rem, 1.05vw, 1.05rem)",
+                  opacity: 0.85,
+                  lineHeight: 1.6,
+                }}
+              >
+                Thank you for your order. We'll process it shortly.
+              </p>
+            </div>
+
+            {/* Order Details */}
+            <div
+              className="rounded-xl border border-[var(--accent-gold)]/15 bg-[var(--bg-main)]/40"
+              style={{
+                paddingTop: "clamp(1rem, 2.5vh, 1.25rem)",
+                paddingBottom: "clamp(1rem, 2.5vh, 1.25rem)",
+                paddingLeft: "clamp(1rem, 2.5vw, 1.25rem)",
+                paddingRight: "clamp(1rem, 2.5vw, 1.25rem)",
+                display: "flex",
+                flexDirection: "column",
+                gap: "clamp(0.6rem, 1.5vh, 0.9rem)",
+              }}
+            >
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <span
+                  className="text-[var(--text-secondary)]"
+                  style={{ fontSize: "clamp(0.92rem, 1vw, 1rem)", opacity: 0.8 }}
+                >
+                  Order Number
+                </span>
+                <span
+                  className="text-[var(--accent-gold)]"
+                  style={{ fontSize: "clamp(0.98rem, 1.05vw, 1.06rem)", fontWeight: 600 }}
+                >
+                  {successData.orderNumber}
+                </span>
+              </div>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <span
+                  className="text-[var(--text-secondary)]"
+                  style={{ fontSize: "clamp(0.92rem, 1vw, 1rem)", opacity: 0.8 }}
+                >
+                  Total Amount
+                </span>
+                <span
+                  className="text-[var(--accent-gold)]"
+                  style={{ fontSize: "clamp(0.98rem, 1.05vw, 1.06rem)", fontWeight: 600 }}
+                >
+                  {successData.total}
+                </span>
+              </div>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <span
+                  className="text-[var(--text-secondary)]"
+                  style={{ fontSize: "clamp(0.92rem, 1vw, 1rem)", opacity: 0.8 }}
+                >
+                  Status
+                </span>
+                <span
+                  className="text-[var(--accent-gold)]"
+                  style={{ fontSize: "clamp(0.98rem, 1.05vw, 1.06rem)", fontWeight: 600 }}
+                >
+                  {successData.status}
+                </span>
+              </div>
+            </div>
+
+            {/* Next Steps */}
+            <p
+              className="text-[var(--text-secondary)] text-center"
+              style={{
+                fontSize: "clamp(0.88rem, 0.95vw, 0.96rem)",
+                opacity: 0.75,
+                lineHeight: 1.6,
+              }}
+            >
+              Redirecting to confirmation page...
+            </p>
+          </div>
+        </div>
+      )}
+
       {error && (
         <div
           className="rounded-xl border border-red-400/30 bg-red-500/10 text-red-400"
@@ -134,9 +415,16 @@ export default function CheckoutForm() {
             paddingLeft: "clamp(1.1rem, 2.8vw, 1.4rem)",
             paddingRight: "clamp(1.1rem, 2.8vw, 1.4rem)",
             fontSize: "clamp(0.96rem, 1.05vw, 1.05rem)",
+            display: "flex",
+            flexDirection: "column",
+            gap: "clamp(0.4rem, 1vh, 0.6rem)",
           }}
         >
-          {error}
+          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+            <span style={{ fontSize: "1.2em" }}>⚠</span>
+            <strong>Checkout Error</strong>
+          </div>
+          <p style={{ lineHeight: 1.5 }}>{error}</p>
         </div>
       )}
 
@@ -403,7 +691,7 @@ export default function CheckoutForm() {
                 </span>
               </div>
               <span className="text-[var(--text-primary)]" style={{ fontSize: "clamp(0.98rem, 1.05vw, 1.06rem)", fontWeight: 600 }}>
-                Rs {((Number(item.price) || 0) * (item.quantity || 0)).toLocaleString()}
+                Rs {(extractNumericPrice(item.price) * (item.quantity || 0)).toLocaleString()}
               </span>
             </div>
           ))}

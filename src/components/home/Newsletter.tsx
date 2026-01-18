@@ -13,12 +13,13 @@ const ScentedFumesNewsletter = () => {
 
   return (
     <section 
-      className="w-full flex flex-col items-center justify-center text-center bg-gradient-to-b from-[#5c311b] via-[#8c512f] to-[#3d1f11]"
+      className="w-full flex flex-col items-center justify-center text-center"
       style={{
         paddingTop: "clamp(4rem, 6vh, 6rem)",
         paddingBottom: "clamp(4rem, 6vh, 6rem)",
         paddingLeft: "clamp(2rem, 5vw, 6rem)",
         paddingRight: "clamp(2rem, 5vw, 6rem)",
+        background: "var(--gradient-newsletter)",
       }}
     >
       <motion.div
@@ -37,7 +38,7 @@ const ScentedFumesNewsletter = () => {
           variants={fadeUp}
         >
           <h2 
-            className="text-[#e2b18a] font-light tracking-widest uppercase"
+            className="text-[var(--accent-gold)] font-light tracking-widest uppercase"
             style={{
               fontSize: "clamp(1.5rem, 2.5vw, 2.5rem)",
               letterSpacing: "0.2em",
@@ -63,15 +64,15 @@ const ScentedFumesNewsletter = () => {
               type="email"
               placeholder="Your Email Address"
               required
-              className="flex-grow bg-transparent border-b-2 border-[#e2b18a] px-4 py-3 text-[#e2b18a] placeholder-[#a67c52] outline-none focus:border-b-2 focus:border-white transition-all font-light"
+              className="flex-grow bg-transparent border-b-2 border-[var(--accent-gold)] px-4 py-3 text-[var(--accent-gold)] placeholder-[var(--text-muted)] outline-none focus:border-b-2 focus:border-[var(--text-secondary)] transition-all font-light"
               style={{
                 fontSize: "clamp(0.95rem, 1vw, 1.1rem)",
-                borderBottom: "2px solid #e2b18a",
+                borderBottom: "2px solid var(--accent-gold)",
               }}
             />
             <button 
               type="submit"
-              className="bg-[#e2b18a] text-[#120a06] px-8 py-3 tracking-widest font-light hover:bg-white transition-colors uppercase whitespace-nowrap border-2 border-[#e2b18a] rounded-sm"
+              className="bg-[var(--accent-gold)] text-[var(--bg-main)] px-8 py-3 tracking-widest font-light hover:bg-[var(--text-secondary)] transition-colors uppercase whitespace-nowrap border-2 border-[var(--accent-gold)] rounded-sm"
               style={{
                 fontSize: "clamp(0.85rem, 0.95vw, 1rem)",
                 letterSpacing: "0.15em",
@@ -93,7 +94,7 @@ const ScentedFumesNewsletter = () => {
             transition={{ duration: 0.5 }}
           >
             <p 
-              className="text-[#e2b18a] font-light tracking-widest uppercase"
+              className="text-[var(--accent-gold)] font-light tracking-widest uppercase"
               style={{
                 fontSize: "clamp(1.2rem, 1.8vw, 1.8rem)",
                 letterSpacing: "0.15em",
@@ -113,7 +114,7 @@ const ScentedFumesNewsletter = () => {
           variants={fadeUp}
         >
           <p 
-            className="text-[#e2b18a] leading-relaxed font-light tracking-wide"
+            className="text-[var(--accent-gold)] leading-relaxed font-light tracking-wide"
             style={{
               fontSize: "clamp(0.95rem, 1.1vw, 1.2rem)",
               lineHeight: 1.8,
@@ -155,7 +156,7 @@ const SocialCircleIcon = ({ children, href }: { children: React.ReactNode; href:
     href={href}
     target="_blank"
     rel="noopener noreferrer"
-    className="flex items-center justify-center rounded-full bg-[#e2b18a] text-[#3d1f11] hover:bg-white transition-colors duration-300"
+    className="flex items-center justify-center rounded-full bg-[var(--accent-gold)] text-[var(--bg-main)] hover:bg-[var(--text-secondary)] transition-colors duration-300"
     style={{
       width: "clamp(2.5rem, 3.5vw, 3rem)",
       height: "clamp(2.5rem, 3.5vw, 3rem)",

@@ -29,18 +29,19 @@ export const GenderCard = ({
             alt={title} 
             width={250}
             height={250}
-            className="w-2/3 h-auto object-contain mb-4" 
+            className="w-2/3 h-auto object-contain" 
+            style={{ marginBottom: "clamp(0.75rem, 1.5vh, 1.25rem)" }}
           />
-          <span className="
-            px-6 py-2 
-            rounded-full 
-            border border-[#D4AF37] 
-            text-[#D4AF37] 
-            uppercase tracking-widest text-sm font-semibold
-            transition-all duration-300
-            group-hover:bg-[#D4AF37] group-hover:text-black
-            font-[family-name:var(--font-montserrat)]
-          ">
+          <span 
+            className="rounded-full border border-[var(--accent-gold)] text-[var(--accent-gold)] uppercase tracking-widest text-sm font-semibold transition-all duration-300 group-hover:bg-[var(--accent-gold)] group-hover:text-[var(--bg-main)]"
+            style={{
+              paddingTop: "clamp(0.45rem, 0.9vh, 0.6rem)",
+              paddingBottom: "clamp(0.45rem, 0.9vh, 0.6rem)",
+              paddingLeft: "clamp(1.25rem, 2.5vw, 1.75rem)",
+              paddingRight: "clamp(1.25rem, 2.5vw, 1.75rem)",
+              fontFamily: "var(--font-poppins), sans-serif",
+            }}
+          >
             {title}
           </span>
         </div>

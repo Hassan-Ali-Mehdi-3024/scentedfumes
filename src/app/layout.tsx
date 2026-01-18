@@ -3,7 +3,7 @@ import { Poppins, Playfair_Display } from "next/font/google";
 import Image from "next/image";
 import CartDrawer from "@/components/cart/CartDrawer";
 import Header from "@/components/layout/Header";
-// import Footer from "@/components/layout/Footer";
+import Footer from "@/components/layout/Footer";
 import "./globals.css";
 
 const poppins = Poppins({
@@ -42,7 +42,7 @@ export default function RootLayout({
         >
           {children}
         </div>
-        {/* <Footer /> */}
+        <Footer />
         <CartDrawer />
       </body>
     </html>

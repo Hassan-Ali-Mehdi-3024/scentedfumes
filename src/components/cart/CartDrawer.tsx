@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useCartStore } from "@/lib/store/cartStore";
-import { formatPrice, cn } from "@/lib/utils";
+import { extractNumericPrice, formatPrice, cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { X, ShoppingBag, Minus, Plus, Trash2 } from "lucide-react";
 
@@ -19,7 +19,7 @@ export default function CartDrawer() {
   if (!mounted) return null;
 
   const subtotal = items.reduce((acc, item) => {
-    const price = parseFloat(item.price.replace(/[^0-9.]/g, ""));
+    const price = extractNumericPrice(item.price);
     return acc + price * item.quantity;
   }, 0);
 
@@ -47,7 +47,7 @@ export default function CartDrawer() {
           isOpen ? "translate-x-0" : "translate-x-full"
         )}
         style={{
-          background: "linear-gradient(to bottom, #1a0f08 0%, #0a0504 100%)",
+          background: "var(--gradient-drawer)",
           boxShadow: isOpen ? "-10px 0 50px rgba(0, 0, 0, 0.5)" : "none",
         }}
       >
@@ -133,7 +133,7 @@ export default function CartDrawer() {
             ) : (
               <ul style={{ padding: "0", margin: 0 }}>
                 {items.map((item, index) => {
-                  const itemTotal = parseFloat(item.price.replace(/[^0-9.]/g, "")) * item.quantity;
+                  const itemTotal = extractNumericPrice(item.price) * item.quantity;
                   
                   return (
                     <li 

@@ -26,16 +26,16 @@ export const Hero = () => {
         </div>
 
         <div className="absolute inset-0 z-5 pointer-events-none" style={{
-          background: "linear-gradient(to bottom, transparent 60%, rgba(0, 0, 0, 0.8) 100%)",
+          background: "var(--gradient-hero-overlay)",
         }} />
 
         <motion.div
           className="relative z-10 w-full"
           style={{
-            paddingTop: "8rem",
-            paddingBottom: "3rem",
-            paddingLeft: "2rem",
-            paddingRight: "2rem",
+            paddingTop: "clamp(6rem, 15vh, 10rem)",
+            paddingBottom: "clamp(2rem, 5vh, 4rem)",
+            paddingLeft: "clamp(1.5rem, 4vw, 3rem)",
+            paddingRight: "clamp(1.5rem, 4vw, 3rem)",
           }}
           initial="hidden"
           animate="visible"
@@ -50,7 +50,7 @@ export const Hero = () => {
                 <span 
                   className="block text-[var(--accent-gold)] mb-1"
                   style={{
-                    fontSize: "1.7rem",
+                    fontSize: "clamp(1.5rem, 4.5vw, 1.9rem)",
                     letterSpacing: "0.05em",
                     fontFamily: "var(--font-playfair), serif",
                     fontWeight: 100,
@@ -61,7 +61,7 @@ export const Hero = () => {
                 <span 
                   className="block text-[var(--accent-gold)] mb-1"
                   style={{
-                    fontSize: "1.7rem",
+                    fontSize: "clamp(1.5rem, 4.5vw, 1.9rem)",
                     letterSpacing: "0.05em",
                     lineHeight: 0.4,
                     fontFamily: "var(--font-playfair), serif",
@@ -73,7 +73,7 @@ export const Hero = () => {
                 <span 
                   className="block text-[var(--accent-gold)]"
                   style={{
-                    fontSize: "2.5rem",
+                    fontSize: "clamp(2.2rem, 6.5vw, 2.8rem)",
                     letterSpacing: "0.08em",
                     fontFamily: "var(--font-playfair), serif",
                     fontWeight: 800,
@@ -87,7 +87,7 @@ export const Hero = () => {
             <motion.p 
               className="text-[var(--text-primary)] font-light"
               style={{
-                fontSize: "0.75rem",
+                fontSize: "clamp(0.75rem, 2vw, 0.85rem)",
                 maxWidth: "90%",
                 lineHeight: "1.4",
               }}
@@ -118,16 +118,16 @@ export const Hero = () => {
         </div>
 
         <div className="absolute inset-0 z-5 pointer-events-none" style={{
-          background: "linear-gradient(to bottom, transparent 60%, rgba(0, 0, 0, 0.8) 100%)",
+          background: "var(--gradient-hero-overlay)",
         }} />
 
         <motion.div
           className="relative z-10 w-full"
           style={{
-            paddingTop: "8rem",
-            paddingBottom: "8rem",
-            paddingLeft: "6rem",
-            paddingRight: "6rem",
+            paddingTop: "clamp(6rem, 12vh, 10rem)",
+            paddingBottom: "clamp(6rem, 12vh, 10rem)",
+            paddingLeft: "clamp(3rem, 8vw, 8rem)",
+            paddingRight: "clamp(3rem, 8vw, 8rem)",
           }}
           initial="hidden"
           animate="visible"
@@ -143,7 +143,7 @@ export const Hero = () => {
                   <span 
                     className="block text-[var(--accent-gold)] mb-1"
                     style={{
-                      fontSize: "3rem",
+                      fontSize: "clamp(2.5rem, 4vw, 3.5rem)",
                       letterSpacing: "0.05em",
                       fontFamily: "var(--font-playfair), serif",
                       fontWeight: 100,
@@ -154,7 +154,7 @@ export const Hero = () => {
                   <span 
                     className="block text-[var(--accent-gold)] mb-1"
                     style={{
-                      fontSize: "3rem",
+                      fontSize: "clamp(2.5rem, 4vw, 3.5rem)",
                       letterSpacing: "0.05em",
                       lineHeight: 0.4,
                       fontFamily: "var(--font-playfair), serif",
@@ -166,7 +166,7 @@ export const Hero = () => {
                   <span 
                     className="block text-[var(--accent-gold)]"
                     style={{
-                      fontSize: "5rem",
+                      fontSize: "clamp(4rem, 6.5vw, 5.5rem)",
                       letterSpacing: "0.08em",
                       fontFamily: "var(--font-playfair), serif",
                       fontWeight: 800,
@@ -180,7 +180,7 @@ export const Hero = () => {
               <motion.p 
                 className="text-[var(--text-primary)] font-light"
                 style={{
-                  fontSize: "1.1rem",
+                  fontSize: "clamp(1rem, 1.4vw, 1.2rem)",
                   maxWidth: "90%",
                   lineHeight: "1.6",
                 }}

@@ -9,6 +9,13 @@
   --text-secondary: #ffffff;
   --text-muted: rgba(255, 255, 255, 0.6);
   
+  /* Common Gradients */
+  --gradient-drawer: linear-gradient(to bottom, #1a0f08 0%, #0a0504 100%);
+  --gradient-surface-fade: linear-gradient(to bottom, rgba(59, 31, 11, 0.3) 0%, rgba(0, 0, 0, 0) 100%);
+  --gradient-newsletter: linear-gradient(to bottom, #5c311b 0%, #8c512f 50%, #3d1f11 100%);
+  --gradient-hero-overlay: linear-gradient(to bottom, transparent 60%, rgba(0, 0, 0, 0.8) 100%);
+  --gradient-category-header: linear-gradient(to bottom, rgba(59, 31, 11, 0.15) 0%, rgba(0, 0, 0, 0) 100%);
+  
   /* Retain for compatibility unless fully scrubbed */
   --background: var(--bg-main);
   --foreground: var(--text-secondary);

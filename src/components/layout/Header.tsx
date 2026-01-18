@@ -357,7 +357,7 @@ export default function Header() {
               paddingLeft: "clamp(1.75rem, 4vw, 2.5rem)",
               paddingRight: "clamp(1.75rem, 4vw, 2.5rem)",
               paddingBottom: "clamp(2rem, 5vw, 3rem)",
-              background: "linear-gradient(to bottom, #1a0f08 0%, #0a0504 100%)",
+              background: "var(--gradient-drawer)",
               boxShadow: "-10px 0 50px rgba(0, 0, 0, 0.5)"
             }}
           >

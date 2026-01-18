@@ -44,7 +44,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
           paddingBottom: "clamp(2.5rem, 5vh, 4rem)",
           paddingLeft: "clamp(1.5rem, 4vw, 4rem)",
           paddingRight: "clamp(1.5rem, 4vw, 4rem)",
-          background: "linear-gradient(to bottom, rgba(59, 31, 11, 0.15) 0%, rgba(0, 0, 0, 0) 100%)",
+          background: "var(--gradient-category-header)",
         }}
       >
         <div style={{ display: "flex", flexDirection: "column", gap: "clamp(1.5rem, 3vh, 2.25rem)" }}>

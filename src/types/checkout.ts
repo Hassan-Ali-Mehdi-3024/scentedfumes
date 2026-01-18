@@ -27,11 +27,12 @@ export interface CheckoutInput {
     key: string;
     value: string;
   }[];
-  lineItems?: {
-    productId: number;
-    quantity: number;
-    variationId?: number;
-  }[];
+}
+
+export interface CartItem {
+  productId: number;
+  quantity: number;
+  variationId?: number;
 }
 
 export interface Order {

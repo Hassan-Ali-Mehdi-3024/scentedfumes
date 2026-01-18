@@ -34,21 +34,29 @@ export default function PrivacyPolicyPage() {
       className="flex-1 w-full bg-[var(--bg-main)] text-[var(--text-secondary)]"
       style={{ paddingTop: "var(--header-offset, 5rem)" }}
     >
-      <div className="w-full" style={containerPadding}>
+      <div className="w-full flex justify-center" style={containerPadding}>
+        <div className="w-full lg:max-w-4xl">
         <header
-          className="w-full"
-          style={{ display: "flex", flexDirection: "column", gap: "clamp(0.65rem, 1.8vh, 1rem)" }}
+          className="text-center lg:text-left flex flex-col items-center lg:items-start"
+          style={{ gap: "clamp(0.65rem, 1.8vh, 1rem)" }}
         >
           <div
-            className="inline-flex items-center rounded-full border border-[var(--accent-gold)]/30 bg-[var(--bg-surface)]/60 px-4 py-2 text-[var(--text-primary)]"
-            style={{ gap: "clamp(0.35rem, 0.9vh, 0.6rem)", fontSize: "clamp(0.8rem, 1vw, 0.95rem)", width: "fit-content", maxWidth: "100%" }}
+            className="inline-flex items-center rounded-full border border-[var(--accent-gold)]/30 bg-[var(--bg-surface)]/60 text-[var(--text-primary)] lg:self-start"
+            style={{ 
+              paddingTop: "clamp(0.5rem, 1.2vh, 0.65rem)",
+              paddingBottom: "clamp(0.5rem, 1.2vh, 0.65rem)",
+              paddingLeft: "clamp(0.9rem, 2.5vw, 1.1rem)",
+              paddingRight: "clamp(0.9rem, 2.5vw, 1.1rem)",
+              gap: "clamp(0.35rem, 0.9vh, 0.6rem)", 
+              fontSize: "clamp(0.8rem, 1vw, 0.95rem)" 
+            }}
           >
             <span className="h-2 w-2 rounded-full bg-[var(--accent-gold)]" />
             Privacy first, always
           </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: "clamp(0.4rem, 1vh, 0.75rem)" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "clamp(0.4rem, 1vh, 0.75rem)", width: "100%", alignItems: "center" }}>
             <h1
-              className="text-[var(--text-primary)]"
+              className="text-[var(--text-primary)] text-center lg:text-left lg:self-start"
               style={{
                 fontFamily: "var(--font-playfair)",
                 fontWeight: 600,
@@ -58,7 +66,7 @@ export default function PrivacyPolicyPage() {
             >
               Privacy Policy
             </h1>
-            <p style={{ color: "var(--text-secondary)", opacity: 0.8, fontSize: "clamp(0.95rem, 1.05vw, 1.05rem)" }}>
+            <p className="text-center lg:text-left lg:self-start" style={{ color: "var(--text-secondary)", opacity: 0.8, fontSize: "clamp(0.95rem, 1.05vw, 1.05rem)" }}>
               Last updated: January 2026
             </p>
           </div>
@@ -164,6 +172,7 @@ export default function PrivacyPolicyPage() {
             </div>
           </div>
         </section>
+        </div>
       </div>
     </main>
   );

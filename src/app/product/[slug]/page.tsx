@@ -31,15 +31,51 @@ export default async function ProductPage({ params }: ProductPageProps) {
   const related = product.related?.nodes ?? [];
 
   return (
-    <main className="w-full flex-1 bg-slate-950 px-6 py-10 text-white sm:px-10">
-      <section className="mx-auto w-full space-y-10">
-        <Link href="/" className="text-sm font-medium text-amber-300">
+    <main 
+      className="w-full flex-1 bg-[var(--bg-main)] text-[var(--text-secondary)]"
+      style={{
+        paddingTop: "clamp(2rem, 4vh, 3rem)",
+        paddingBottom: "clamp(2rem, 4vh, 3rem)",
+        paddingLeft: "clamp(1.5rem, 4vw, 4rem)",
+        paddingRight: "clamp(1.5rem, 4vw, 4rem)",
+      }}
+    >
+      <section 
+        className="mx-auto w-full"
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "clamp(2rem, 4vh, 3rem)",
+        }}
+      >
+        <Link 
+          href="/" 
+          className="text-[var(--accent-gold)] font-medium transition-colors hover:text-[var(--text-secondary)]"
+          style={{
+            fontSize: "clamp(0.85rem, 1vw, 0.95rem)",
+            letterSpacing: "0.05em",
+          }}
+        >
           ← Back to shop
         </Link>
 
-        <div className="grid gap-10 lg:grid-cols-[1.4fr_1fr]">
-          <article className="space-y-8">
-            <div className="relative h-[420px] w-full overflow-hidden rounded-[48px] border border-white/10 bg-white/5">
+        <div 
+          className="grid lg:grid-cols-[1.4fr_1fr]"
+          style={{ gap: "clamp(2rem, 4vw, 3.5rem)" }}
+        >
+          <article 
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "clamp(2rem, 4vh, 2.5rem)",
+            }}
+          >
+            <div 
+              className="relative w-full overflow-hidden rounded-3xl border border-[var(--accent-gold)]/20 bg-[var(--bg-surface)]/30"
+              style={{
+                height: "clamp(350px, 50vh, 500px)",
+              }}
+            >
               {product.image?.sourceUrl ? (
                 <Image
                   src={product.image.sourceUrl}
@@ -49,41 +85,94 @@ export default async function ProductPage({ params }: ProductPageProps) {
                   sizes="(min-width: 1024px) 50vw, 100vw"
                 />
               ) : (
-                <div className="flex h-full items-center justify-center text-sm uppercase tracking-[0.4em] text-slate-400">
+                <div 
+                  className="flex h-full items-center justify-center text-[var(--text-muted)] uppercase tracking-widest"
+                  style={{ fontSize: "clamp(0.75rem, 0.9vw, 0.85rem)" }}
+                >
                   No image
                 </div>
               )}
             </div>
 
-            <div className="space-y-6 rounded-[32px] border border-white/5 bg-white/5 p-6">
-              <div className="space-y-2">
-                <p className="text-xs uppercase tracking-[0.4em] text-slate-400">
+            <div 
+              className="rounded-2xl border border-[var(--accent-gold)]/15 bg-[var(--bg-surface)]/25"
+              style={{
+                paddingTop: "clamp(1.5rem, 3vh, 2rem)",
+                paddingBottom: "clamp(1.5rem, 3vh, 2rem)",
+                paddingLeft: "clamp(1.5rem, 3vw, 2rem)",
+                paddingRight: "clamp(1.5rem, 3vw, 2rem)",
+                display: "flex",
+                flexDirection: "column",
+                gap: "clamp(1.25rem, 2.5vh, 1.75rem)",
+              }}
+            >
+              <div style={{ display: "flex", flexDirection: "column", gap: "clamp(0.5rem, 1vh, 0.75rem)" }}>
+                <p 
+                  className="uppercase tracking-widest text-[var(--text-muted)]"
+                  style={{ fontSize: "clamp(0.65rem, 0.8vw, 0.75rem)" }}
+                >
                   {product.stockStatus === "IN_STOCK" ? "In stock" : "Out of stock"}
                 </p>
-                <h1 className="text-3xl font-semibold text-white">{product.name}</h1>
-                <div className="flex items-center gap-4">
-                  <span className="text-2xl font-semibold text-white">
+                <h1 
+                  className="font-semibold text-[var(--text-primary)]"
+                  style={{
+                    fontSize: "clamp(1.5rem, 3vw, 2rem)",
+                    fontFamily: "var(--font-playfair), serif",
+                    letterSpacing: "-0.01em",
+                  }}
+                >
+                  {product.name}
+                </h1>
+                <div 
+                  className="flex items-center"
+                  style={{ gap: "clamp(0.75rem, 1.5vw, 1.25rem)" }}
+                >
+                  <span 
+                    className="font-semibold text-[var(--accent-gold)]"
+                    style={{ fontSize: "clamp(1.25rem, 2vw, 1.75rem)" }}
+                  >
                     {formatPrice(product.price)}
                   </span>
                   {product.regularPrice && product.regularPrice !== product.price && (
-                    <span className="text-sm text-slate-500 line-through">
+                    <span 
+                      className="text-[var(--text-muted)] line-through"
+                      style={{ fontSize: "clamp(0.85rem, 1vw, 1rem)" }}
+                    >
                       {formatPrice(product.regularPrice)}
                     </span>
                   )}
                 </div>
               </div>
 
-              <div className="prose max-w-none text-slate-200" dangerouslySetInnerHTML={{ __html: description }} />
+              <div 
+                className="prose max-w-none text-[var(--text-secondary)]/85"
+                style={{
+                  fontSize: "clamp(0.9rem, 1vw, 1rem)",
+                  lineHeight: 1.7,
+                }}
+                dangerouslySetInnerHTML={{ __html: description }} 
+              />
 
-              <div className="pt-4">
+              <div style={{ paddingTop: "clamp(0.5rem, 1vh, 0.75rem)" }}>
                 <AddToCartButton product={product} />
               </div>
 
-              <div className="flex flex-wrap gap-2 text-xs uppercase tracking-widest text-slate-400">
+              <div 
+                className="flex flex-wrap"
+                style={{ gap: "clamp(0.5rem, 1vw, 0.75rem)" }}
+              >
                 {product.productCategories?.nodes.map((category) => (
                   <span
                     key={category.slug}
-                    className="rounded-full border border-white/20 px-3 py-1"
+                    className="rounded-full border border-[var(--accent-gold)]/25 bg-[var(--accent-gold)]/5 text-[var(--accent-gold)] uppercase tracking-widest"
+                    style={{
+                      paddingTop: "clamp(0.35rem, 0.7vh, 0.5rem)",
+                      paddingBottom: "clamp(0.35rem, 0.7vh, 0.5rem)",
+                      paddingLeft: "clamp(0.75rem, 1.5vw, 1rem)",
+                      paddingRight: "clamp(0.75rem, 1.5vw, 1rem)",
+                      fontSize: "clamp(0.65rem, 0.8vw, 0.75rem)",
+                      fontWeight: 600,
+                    }}
                   >
                     {category.name}
                   </span>
@@ -92,27 +181,83 @@ export default async function ProductPage({ params }: ProductPageProps) {
             </div>
           </article>
 
-          <aside className="space-y-6 rounded-[32px] border border-white/5 bg-gradient-to-b from-amber-400/20 to-black/20 p-6">
-            <h2 className="text-xl font-semibold text-white">Quick details</h2>
-            <p className="text-sm text-slate-300">
+          <aside 
+            className="rounded-2xl border border-[var(--accent-gold)]/20 bg-gradient-to-b from-[var(--bg-surface)]/40 to-[var(--bg-main)]/20"
+            style={{
+              paddingTop: "clamp(1.5rem, 3vh, 2rem)",
+              paddingBottom: "clamp(1.5rem, 3vh, 2rem)",
+              paddingLeft: "clamp(1.5rem, 3vw, 2rem)",
+              paddingRight: "clamp(1.5rem, 3vw, 2rem)",
+              display: "flex",
+              flexDirection: "column",
+              gap: "clamp(1.25rem, 2.5vh, 1.75rem)",
+            }}
+          >
+            <h2 
+              className="font-semibold text-[var(--text-primary)]"
+              style={{
+                fontSize: "clamp(1.15rem, 1.5vw, 1.5rem)",
+                fontFamily: "var(--font-playfair), serif",
+              }}
+            >
+              Quick details
+            </h2>
+            <p 
+              className="text-[var(--text-secondary)]/80"
+              style={{
+                fontSize: "clamp(0.85rem, 1vw, 0.95rem)",
+                lineHeight: 1.7,
+              }}
+            >
               Crafted to deliver a balanced projection with notes that unfold over hours. We
               recommend sampling at least two sprays before committing to the full bottle.
             </p>
-            <div className="space-y-4">
-              <p className="text-xs uppercase tracking-[0.4em] text-slate-400">Variant</p>
-              <p className="text-lg font-medium text-white">Single concentrate</p>
+            <div style={{ display: "flex", flexDirection: "column", gap: "clamp(0.75rem, 1.5vh, 1rem)" }}>
+              <p 
+                className="uppercase tracking-widest text-[var(--text-muted)]"
+                style={{ fontSize: "clamp(0.65rem, 0.8vw, 0.75rem)" }}
+              >
+                Variant
+              </p>
+              <p 
+                className="font-medium text-[var(--text-primary)]"
+                style={{ fontSize: "clamp(1rem, 1.2vw, 1.15rem)" }}
+              >
+                Single concentrate
+              </p>
             </div>
-            <div className="space-y-4">
-              <p className="text-xs uppercase tracking-[0.4em] text-slate-400">Sillage</p>
-              <p className="text-lg font-medium text-white">Moderate to strong</p>
+            <div style={{ display: "flex", flexDirection: "column", gap: "clamp(0.75rem, 1.5vh, 1rem)" }}>
+              <p 
+                className="uppercase tracking-widest text-[var(--text-muted)]"
+                style={{ fontSize: "clamp(0.65rem, 0.8vw, 0.75rem)" }}
+              >
+                Sillage
+              </p>
+              <p 
+                className="font-medium text-[var(--text-primary)]"
+                style={{ fontSize: "clamp(1rem, 1.2vw, 1.15rem)" }}
+              >
+                Moderate to strong
+              </p>
             </div>
           </aside>
         </div>
 
         {related.length ? (
-          <section className="space-y-4">
-            <h2 className="text-2xl font-semibold">Related scents</h2>
-            <div className="flex flex-wrap justify-center gap-8">
+          <section style={{ display: "flex", flexDirection: "column", gap: "clamp(1.5rem, 3vh, 2rem)" }}>
+            <h2 
+              className="font-semibold text-[var(--text-primary)]"
+              style={{
+                fontSize: "clamp(1.5rem, 2.5vw, 2rem)",
+                fontFamily: "var(--font-playfair), serif",
+              }}
+            >
+              Related scents
+            </h2>
+            <div 
+              className="flex flex-wrap justify-center"
+              style={{ gap: "clamp(1.5rem, 3vw, 2.5rem)" }}
+            >
               {related.map((relatedItem) => (
                 <ProductCard
                   key={relatedItem.id}
