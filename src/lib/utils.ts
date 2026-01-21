@@ -9,7 +9,7 @@ export function cn(...inputs: ClassValue[]) {
  * Cleans WooCommerce price strings (e.g., `₨&nbsp;2,700`).
  * Removes HTML entities and returns cleaned string.
  */
-export function formatPrice(price: string) {
+export function formatPrice(price: string | undefined): string {
   if (!price) {
     return "";
   }
@@ -26,7 +26,7 @@ export function formatPrice(price: string) {
  * Extracts numeric value from price string for calculations.
  * Example: "₨ 2,700" -> 2700
  */
-export function extractNumericPrice(priceString: string): number {
+export function extractNumericPrice(priceString: string | undefined): number {
   if (!priceString) return 0;
   
   // First clean HTML entities

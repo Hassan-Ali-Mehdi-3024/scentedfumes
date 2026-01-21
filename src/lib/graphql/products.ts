@@ -5,18 +5,29 @@ const GET_PRODUCTS_QUERY = `
   query GetProducts {
     products(first: 20) {
       nodes {
+        id
+        databaseId
+        slug
+        name
+        image {
+          sourceUrl
+          altText
+        }
         ... on SimpleProduct {
-          id
-          databaseId
-          slug
-          name
           price
           regularPrice
           stockStatus
-          image {
-            sourceUrl
-            altText
+          productCategories {
+            nodes {
+              name
+              slug
+            }
           }
+        }
+        ... on VariableProduct {
+          price
+          regularPrice
+          stockStatus
           productCategories {
             nodes {
               name
@@ -48,20 +59,42 @@ const GET_PRODUCT_SLUGS_QUERY = `
 const GET_PRODUCT_BY_SLUG_QUERY = `
   query ProductBySlug($slug: ID!) {
     product(id: $slug, idType: SLUG) {
+      id
+      databaseId
+      slug
+      name
+      description
+      shortDescription
+      image {
+        sourceUrl
+        altText
+      }
       ... on SimpleProduct {
-        id
-        databaseId
-        slug
-        name
-        description
-        shortDescription
         price
         regularPrice
         stockStatus
-        image {
-          sourceUrl
-          altText
+        productCategories {
+          nodes {
+            name
+            slug
+          }
         }
+        related {
+          nodes {
+            id
+            slug
+            name
+            image {
+              sourceUrl
+              altText
+            }
+          }
+        }
+      }
+      ... on VariableProduct {
+        price
+        regularPrice
+        stockStatus
         productCategories {
           nodes {
             name
@@ -114,7 +147,10 @@ export async function fetchProductsWithCategories() {
 
   const nodes = response.data?.products?.nodes ?? [];
   const products = nodes.filter(
-    (node): node is Product => Boolean(node)
+    (node): node is Product => 
+      Boolean(node) && 
+      node.slug !== 'my-product' && 
+      node.name !== 'My Product'
   );
 
   return {
@@ -132,7 +168,9 @@ export async function fetchProductSlugs() {
     throw response.error;
   }
 
-  return response.data?.products?.nodes.map((node) => node.slug) ?? [];
+  return response.data?.products?.nodes
+    .filter((node) => node.slug !== 'my-product')
+    .map((node) => node.slug) ?? [];
 }
 
 export async function fetchProductBySlug(slug: string) {

@@ -5,11 +5,14 @@ import { useCartStore } from "@/lib/store/cartStore";
 
 export default function AddToCartButton({ product }: { product: Product }) {
   const addItem = useCartStore((state) => state.addItem);
+  
+  const isInStock = product.stockStatus === "IN_STOCK";
+  const hasPrice = !!product.price || !!product.regularPrice;
 
   return (
     <button
       onClick={() => addItem(product)}
-      disabled={product.stockStatus !== "IN_STOCK"}
+      disabled={!isInStock || !hasPrice}
       className="w-full rounded-full bg-[var(--accent-gold)] text-[var(--bg-surface)] font-medium uppercase tracking-widest transition-all hover:bg-[var(--accent-gold)]/90 hover:shadow-[0_0_20px_rgba(253,221,173,0.4)] active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
       style={{
         paddingTop: "clamp(0.85rem, 1.8vh, 1.15rem)",
@@ -20,7 +23,7 @@ export default function AddToCartButton({ product }: { product: Product }) {
         letterSpacing: "0.12em",
       }}
     >
-      {product.stockStatus === "IN_STOCK" ? "Add to cart" : "Out of stock"}
+      {!isInStock ? "Out of stock" : !hasPrice ? "Unavailable" : "Add to cart"}
     </button>
   );
 }

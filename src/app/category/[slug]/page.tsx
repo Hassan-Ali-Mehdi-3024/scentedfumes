@@ -4,7 +4,7 @@ import { fetchCategoryBySlug, fetchCategorySlugs } from "@/lib/graphql/categorie
 import { formatPrice } from "@/lib/utils";
 import ProductCard from "@/components/ui/ProductCard";
 
-export const revalidate = 3600;
+export const revalidate = 0; // Force fresh data on every request during development
 
 export async function generateStaticParams() {
   // Only pre-generate main category pages to avoid timeouts
@@ -26,11 +26,16 @@ type CategoryPageProps = {
 
 export default async function CategoryPage({ params }: CategoryPageProps) {
   const { slug } = await params;
-  const { category, products } = await fetchCategoryBySlug(slug);
+  const { category, products: rawProducts } = await fetchCategoryBySlug(slug);
 
   if (!category) {
     notFound();
   }
+
+  // Additional filtering to ensure "My Product" is excluded
+  const products = rawProducts.filter(
+    (product) => product.slug !== 'my-product' && product.name !== 'My Product'
+  );
 
   const productCountLabel = `${products.length} ${products.length === 1 ? "product" : "products"}`;
 

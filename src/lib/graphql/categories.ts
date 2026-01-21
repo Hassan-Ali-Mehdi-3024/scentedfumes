@@ -11,18 +11,29 @@ const GET_CATEGORY_QUERY = `
     }
     products(first: $first, where: { category: $categorySlug }) {
       nodes {
+        id
+        databaseId
+        slug
+        name
+        image {
+          sourceUrl
+          altText
+        }
         ... on SimpleProduct {
-          id
-          databaseId
-          slug
-          name
           price
           regularPrice
           stockStatus
-          image {
-            sourceUrl
-            altText
+          productCategories {
+            nodes {
+              name
+              slug
+            }
           }
+        }
+        ... on VariableProduct {
+          price
+          regularPrice
+          stockStatus
           productCategories {
             nodes {
               name
@@ -80,7 +91,12 @@ export async function fetchCategoryBySlug(slug: string) {
   }
 
   const category = response.data?.productCategory ?? null;
-  const products = response.data?.products?.nodes.filter((node): node is Product => Boolean(node)) ?? [];
+  const products = response.data?.products?.nodes.filter(
+    (node): node is Product => 
+      Boolean(node) && 
+      node.slug !== 'my-product' && 
+      node.name !== 'My Product'
+  ) ?? [];
 
   return {
     category,

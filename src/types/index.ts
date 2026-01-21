@@ -15,9 +15,10 @@ export interface Product {
   name: string;
   description?: string;
   shortDescription?: string;
-  price: string; // Contains HTML entities such as &nbsp;
+  price?: string; // Contains HTML entities such as &nbsp; (optional for VariableProduct)
   regularPrice?: string;
-  stockStatus: string; // e.g. "IN_STOCK" | "OUT_OF_STOCK"
+  stockStatus?: string; // e.g. "IN_STOCK" | "OUT_OF_STOCK"
+  productType?: string; // "SimpleProduct" | "VariableProduct"
   image: ProductImage;
   productCategories?: {
     nodes: ProductCategory[];
