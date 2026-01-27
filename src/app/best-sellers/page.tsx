@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import ProductCard from "@/components/ui/ProductCard";
 import { graphqlClient } from "@/lib/graphql/client";
+import { formatPrice } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "Best Sellers | Scented Fumes",
@@ -11,7 +12,7 @@ export const revalidate = 3600; // Revalidate every hour
 
 const BEST_SELLERS_QUERY = `
   query GetBestSellers {
-    studioPro: product(id: "studio-pro", idType: SLUG) {
+    testerPack: product(id: "5ml-testers-of-your-choice", idType: SLUG) {
       id
       databaseId
       slug
@@ -29,7 +30,25 @@ const BEST_SELLERS_QUERY = `
         regularPrice
       }
     }
-    suaveEco: product(id: "suave-eco", idType: SLUG) {
+    suave: product(id: "suave", idType: SLUG) {
+      id
+      databaseId
+      slug
+      name
+      image {
+        sourceUrl
+        altText
+      }
+      ... on SimpleProduct {
+        price
+        regularPrice
+      }
+      ... on VariableProduct {
+        price
+        regularPrice
+      }
+    }
+    floralFume: product(id: "floral-fume", idType: SLUG) {
       id
       databaseId
       slug
@@ -65,25 +84,7 @@ const BEST_SELLERS_QUERY = `
         regularPrice
       }
     }
-    floralFume: product(id: "floral-fume-eco", idType: SLUG) {
-      id
-      databaseId
-      slug
-      name
-      image {
-        sourceUrl
-        altText
-      }
-      ... on SimpleProduct {
-        price
-        regularPrice
-      }
-      ... on VariableProduct {
-        price
-        regularPrice
-      }
-    }
-    testerPack: product(id: "5ml-testers-of-your-choice", idType: SLUG) {
+    studioPro: product(id: "studio-our-rendition-of-office-for-men-2", idType: SLUG) {
       id
       databaseId
       slug
@@ -116,11 +117,11 @@ async function getBestSellers() {
   
   // Collect all products from individual queries
   const allProducts = [
-    data?.studioPro,
-    data?.suaveEco,
-    data?.pinkBling,
-    data?.floralFume,
     data?.testerPack,
+    data?.suave,
+    data?.floralFume,
+    data?.pinkBling,
+    data?.studioPro,
   ].filter((product) => product !== null && product !== undefined);
 
   // Filter out "My Product" sample (if any)
@@ -210,7 +211,7 @@ export default async function BestSellersPage() {
               <ProductCard
                 key={product.id}
                 title={product.name}
-                price={product.price || product.regularPrice || "N/A"}
+                price={formatPrice(product.price || product.regularPrice) || "N/A"}
                 imageSrc={product.image?.sourceUrl || "/placeholder.jpg"}
                 href={`/product/${product.slug}`}
               />

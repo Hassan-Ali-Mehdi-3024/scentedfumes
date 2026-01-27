@@ -3,13 +3,13 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useCartStore } from "@/lib/store/cartStore";
-import { extractNumericPrice, formatPrice, cn } from "@/lib/utils";
+import { extractNumericPrice, formatPrice, cn, calculateDisplayTotals } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { X, ShoppingBag, Minus, Plus, Trash2 } from "lucide-react";
 
 export default function CartDrawer() {
   const router = useRouter();
-  const { items, isOpen, toggleCart, updateQuantity, removeItem } = useCartStore();
+  const { items, promotion, isOpen, toggleCart, updateQuantity, removeItem } = useCartStore();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -18,15 +18,13 @@ export default function CartDrawer() {
 
   if (!mounted) return null;
 
-  const subtotal = items.reduce((acc, item) => {
-    const price = extractNumericPrice(item.price);
-    return acc + price * item.quantity;
-  }, 0);
+  const { subtotal: subtotalPrice, discount: promotionDiscount, total: discountedSubtotal } =
+    calculateDisplayTotals(items, promotion);
 
   const totalItems = items.reduce((acc, item) => acc + item.quantity, 0);
   const shippingThreshold = 5000;
-  const remainingForFreeShip = Math.max(0, shippingThreshold - subtotal);
-  const progressToFreeShip = Math.min(1, subtotal / shippingThreshold);
+  const remainingForFreeShip = Math.max(0, shippingThreshold - discountedSubtotal);
+  const progressToFreeShip = Math.min(1, discountedSubtotal / shippingThreshold);
 
   return (
     <>
@@ -134,10 +132,11 @@ export default function CartDrawer() {
               <ul style={{ padding: "0", margin: 0 }}>
                 {items.map((item, index) => {
                   const itemTotal = extractNumericPrice(item.price) * item.quantity;
+                  const cartItemKey = item.cartItemKey || item.id;
                   
                   return (
                     <li 
-                      key={item.id} 
+                      key={cartItemKey} 
                       className="group relative rounded-xl border border-[var(--accent-gold)]/15 bg-[var(--bg-surface)]/22 transition-all hover:border-[var(--accent-gold)]/30 hover:bg-[var(--bg-surface)]/32 shadow-[0_14px_50px_rgba(0,0,0,0.28)]"
                       style={{
                         animation: isOpen ? `slideIn 0.3s ease-out ${index * 0.05}s both` : "none",
@@ -184,9 +183,26 @@ export default function CartDrawer() {
                               <p className="text-sm font-semibold text-[var(--accent-gold)]">
                                 {formatPrice(item.price)}
                               </p>
+                              {item.testerSelections?.length ? (
+                                <div
+                                  className="text-[var(--text-secondary)]/70"
+                                  style={{
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    gap: "clamp(0.2rem, 0.6vh, 0.35rem)",
+                                    fontSize: "clamp(0.7rem, 0.85vw, 0.8rem)",
+                                  }}
+                                >
+                                  {item.testerSelections.map((selection, selectionIndex) => (
+                                    <span key={`${cartItemKey}-tester-${selectionIndex}`}>
+                                      Tester {selectionIndex + 1}: {selection}
+                                    </span>
+                                  ))}
+                                </div>
+                              ) : null}
                             </div>
                             <button
-                              onClick={() => removeItem(item.id)}
+                              onClick={() => removeItem(cartItemKey)}
                               className="group/remove flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-medium text-red-400/80 transition-all hover:bg-red-500/10 hover:text-red-400"
                               aria-label="Remove item"
                             >
@@ -199,7 +215,7 @@ export default function CartDrawer() {
                           <div className="flex items-center justify-start" style={{ marginTop: "clamp(0.25rem, 0.8vh, 0.5rem)" }}>
                             <div className="flex items-center rounded-full border border-[var(--accent-gold)]/30 bg-black/25 px-2.5 py-1.75" style={{ gap: "0.65rem" }}>
                               <button
-                                onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                                onClick={() => updateQuantity(cartItemKey, item.quantity - 1)}
                                 className="flex h-8 w-8 items-center justify-center rounded-full text-[var(--text-secondary)]/70 transition-all hover:bg-[var(--accent-gold)]/20 hover:text-[var(--accent-gold)] disabled:opacity-30 disabled:cursor-not-allowed"
                                 disabled={item.quantity <= 1}
                                 aria-label="Decrease quantity"
@@ -212,7 +228,7 @@ export default function CartDrawer() {
                                 {item.quantity}
                               </span>
                               <button
-                                onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                                onClick={() => updateQuantity(cartItemKey, item.quantity + 1)}
                                 className="flex h-8 w-8 items-center justify-center rounded-full text-[var(--text-secondary)]/70 transition-all hover:bg-[var(--accent-gold)]/20 hover:text-[var(--accent-gold)]"
                                 aria-label="Increase quantity"
                               >
@@ -268,9 +284,25 @@ export default function CartDrawer() {
                     className="font-semibold text-[var(--text-primary)]"
                     style={{ fontSize: "1.1rem" }}
                   >
-                    Rs {subtotal.toLocaleString()}
+                    Rs {subtotalPrice.toLocaleString()}
                   </span>
                 </div>
+                {promotionDiscount > 0 && (
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-[var(--text-secondary)]/70">Promotion</span>
+                    <span className="font-semibold text-[var(--accent-gold)]" style={{ fontSize: "1.05rem" }}>
+                      - Rs {promotionDiscount.toLocaleString()}
+                    </span>
+                  </div>
+                )}
+                {promotionDiscount > 0 && (
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-[var(--text-secondary)]/70">Total</span>
+                    <span className="font-semibold text-[var(--text-primary)]" style={{ fontSize: "1.1rem" }}>
+                      Rs {discountedSubtotal.toLocaleString()}
+                    </span>
+                  </div>
+                )}
                 
                 <div 
                   className="flex items-center rounded-lg bg-[var(--accent-gold)]/5 border border-[var(--accent-gold)]/20"

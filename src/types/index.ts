@@ -8,6 +8,12 @@ export interface ProductCategory {
   slug: string;
 }
 
+export interface ProductAttribute {
+  name: string;
+  options: string[];
+  variation?: boolean;
+}
+
 export interface Product {
   id: string;
   databaseId: number;
@@ -23,6 +29,9 @@ export interface Product {
   productCategories?: {
     nodes: ProductCategory[];
   };
+  attributes?: {
+    nodes: ProductAttribute[];
+  };
   related?: {
     nodes: Product[];
   };
@@ -30,4 +39,6 @@ export interface Product {
 
 export interface CartItem extends Product {
   quantity: number;
+  cartItemKey: string;
+  testerSelections?: string[];
 }

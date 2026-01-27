@@ -12,6 +12,8 @@ export default function Header() {
   const [shopOpen, setShopOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const headerRef = useRef<HTMLElement | null>(null);
+  const shopRef = useRef<HTMLLIElement | null>(null);
+  const bodyScrollYRef = useRef(0);
 
   useEffect(() => {
     setMounted(true);
@@ -23,6 +25,60 @@ export default function Header() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  useEffect(() => {
+    if (!shopOpen) return;
+
+    const onPointerDown = (event: MouseEvent | TouchEvent) => {
+      const target = event.target as Node | null;
+      if (!target) return;
+      if (!shopRef.current) return;
+      if (shopRef.current.contains(target)) return;
+      setShopOpen(false);
+    };
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setShopOpen(false);
+    };
+
+    document.addEventListener("mousedown", onPointerDown);
+    document.addEventListener("touchstart", onPointerDown, { passive: true });
+    window.addEventListener("keydown", onKeyDown);
+
+    return () => {
+      document.removeEventListener("mousedown", onPointerDown);
+      document.removeEventListener("touchstart", onPointerDown);
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [shopOpen]);
+
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+
+    bodyScrollYRef.current = window.scrollY;
+
+    const body = document.body;
+    const previousPosition = body.style.position;
+    const previousTop = body.style.top;
+    const previousLeft = body.style.left;
+    const previousRight = body.style.right;
+    const previousWidth = body.style.width;
+
+    body.style.position = "fixed";
+    body.style.top = `-${bodyScrollYRef.current}px`;
+    body.style.left = "0";
+    body.style.right = "0";
+    body.style.width = "100%";
+
+    return () => {
+      body.style.position = previousPosition;
+      body.style.top = previousTop;
+      body.style.left = previousLeft;
+      body.style.right = previousRight;
+      body.style.width = previousWidth;
+      window.scrollTo(0, bodyScrollYRef.current);
+    };
+  }, [mobileMenuOpen]);
 
   // Measure header height and expose as CSS variable so pages can offset fixed header
   useEffect(() => {
@@ -171,10 +227,13 @@ export default function Header() {
             {/* SHOP Dropdown */}
             <li
               className="relative"
-              onMouseEnter={() => setShopOpen(true)}
-              onMouseLeave={() => setShopOpen(false)}
+              ref={shopRef}
             >
               <button 
+                type="button"
+                aria-haspopup="menu"
+                aria-expanded={shopOpen}
+                onClick={() => setShopOpen((prev) => !prev)}
                 className="flex items-center gap-2 font-medium uppercase tracking-widest text-[var(--text-secondary)] transition hover:text-[var(--accent-gold)]"
                 style={{ 
                   fontSize: "clamp(0.75rem, 0.9vw, 1rem)",
@@ -201,30 +260,54 @@ export default function Header() {
               {/* Dropdown Menu */}
               {shopOpen && (
                 <div 
-                  className="absolute top-full right-0 rounded-2xl border border-[var(--accent-gold)]/20 bg-[var(--bg-surface)]/95 backdrop-blur-xl shadow-2xl overflow-hidden"
+                  className="absolute top-full right-0 rounded-2xl border border-[var(--accent-gold)]/25 bg-gradient-to-b from-[var(--bg-surface)]/95 to-[var(--bg-main)]/90 backdrop-blur-xl shadow-[0_22px_80px_rgba(0,0,0,0.65)] overflow-hidden"
                   style={{ 
                     marginTop: "clamp(1rem, 2vh, 1.5rem)",
                     width: "clamp(240px, 18vw, 320px)"
                   }}
                 >
-                  <div style={{ padding: "clamp(1.5rem, 2vw, 2.5rem)" }} className="space-y-6">
+                  <div
+                    style={{
+                      paddingTop: "clamp(1.25rem, 2vw, 1.75rem)",
+                      paddingBottom: "clamp(1.25rem, 2vw, 1.75rem)",
+                      paddingLeft: "clamp(1.25rem, 2vw, 1.75rem)",
+                      paddingRight: "clamp(1.25rem, 2vw, 1.75rem)",
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "clamp(1.1rem, 2.4vh, 1.5rem)",
+                    }}
+                  >
                     {/* Gender Categories */}
                     <div>
                       <h3 
                         className="text-xs uppercase tracking-widest text-[var(--text-muted)] font-semibold"
                         style={{ 
-                          marginBottom: "clamp(0.75rem, 1vh, 1rem)",
-                          paddingLeft: "0.5rem"
+                          marginBottom: "clamp(0.75rem, 1vh, 0.95rem)",
+                          paddingLeft: "clamp(0.3rem, 0.8vw, 0.5rem)",
+                          fontSize: "clamp(0.65rem, 0.8vw, 0.75rem)",
                         }}
                       >
                         By Gender
                       </h3>
-                      <ul className="space-y-3">
+                      <ul
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: "clamp(0.5rem, 1.2vh, 0.75rem)",
+                        }}
+                      >
                         <li>
                           <Link
                             href="/category/men"
-                            className="block text-sm text-[var(--text-secondary)] hover:text-[var(--accent-gold)] transition rounded-lg hover:bg-white/5"
-                            style={{ padding: "0.5rem" }}
+                            onClick={() => setShopOpen(false)}
+                            className="block text-[var(--text-secondary)] hover:text-[var(--accent-gold)] transition rounded-xl border border-transparent hover:border-[var(--accent-gold)]/20 hover:bg-[var(--accent-gold)]/10"
+                            style={{
+                              paddingTop: "clamp(0.55rem, 1.1vh, 0.75rem)",
+                              paddingBottom: "clamp(0.55rem, 1.1vh, 0.75rem)",
+                              paddingLeft: "clamp(0.75rem, 1.2vw, 0.9rem)",
+                              paddingRight: "clamp(0.75rem, 1.2vw, 0.9rem)",
+                              fontSize: "clamp(0.85rem, 0.95vw, 0.95rem)",
+                            }}
                           >
                             Men
                           </Link>
@@ -232,8 +315,15 @@ export default function Header() {
                         <li>
                           <Link
                             href="/category/women"
-                            className="block text-sm text-[var(--text-secondary)] hover:text-[var(--accent-gold)] transition rounded-lg hover:bg-white/5"
-                            style={{ padding: "0.5rem" }}
+                            onClick={() => setShopOpen(false)}
+                            className="block text-[var(--text-secondary)] hover:text-[var(--accent-gold)] transition rounded-xl border border-transparent hover:border-[var(--accent-gold)]/20 hover:bg-[var(--accent-gold)]/10"
+                            style={{
+                              paddingTop: "clamp(0.55rem, 1.1vh, 0.75rem)",
+                              paddingBottom: "clamp(0.55rem, 1.1vh, 0.75rem)",
+                              paddingLeft: "clamp(0.75rem, 1.2vw, 0.9rem)",
+                              paddingRight: "clamp(0.75rem, 1.2vw, 0.9rem)",
+                              fontSize: "clamp(0.85rem, 0.95vw, 0.95rem)",
+                            }}
                           >
                             Women
                           </Link>
@@ -241,8 +331,15 @@ export default function Header() {
                         <li>
                           <Link
                             href="/category/unisex"
-                            className="block text-sm text-[var(--text-secondary)] hover:text-[var(--accent-gold)] transition rounded-lg hover:bg-white/5"
-                            style={{ padding: "0.5rem" }}
+                            onClick={() => setShopOpen(false)}
+                            className="block text-[var(--text-secondary)] hover:text-[var(--accent-gold)] transition rounded-xl border border-transparent hover:border-[var(--accent-gold)]/20 hover:bg-[var(--accent-gold)]/10"
+                            style={{
+                              paddingTop: "clamp(0.55rem, 1.1vh, 0.75rem)",
+                              paddingBottom: "clamp(0.55rem, 1.1vh, 0.75rem)",
+                              paddingLeft: "clamp(0.75rem, 1.2vw, 0.9rem)",
+                              paddingRight: "clamp(0.75rem, 1.2vw, 0.9rem)",
+                              fontSize: "clamp(0.85rem, 0.95vw, 0.95rem)",
+                            }}
                           >
                             Unisex
                           </Link>
@@ -251,25 +348,39 @@ export default function Header() {
                     </div>
 
                     {/* Divider */}
-                    <div className="border-t border-white/10" style={{ marginLeft: "0.5rem", marginRight: "0.5rem" }} />
+                    <div className="border-t border-[var(--accent-gold)]/15" />
 
                     {/* Collection Types */}
                     <div>
                       <h3 
                         className="text-xs uppercase tracking-widest text-[var(--text-muted)] font-semibold"
                         style={{ 
-                          marginBottom: "clamp(0.75rem, 1vh, 1rem)",
-                          paddingLeft: "0.5rem"
+                          marginBottom: "clamp(0.75rem, 1vh, 0.95rem)",
+                          paddingLeft: "clamp(0.3rem, 0.8vw, 0.5rem)",
+                          fontSize: "clamp(0.65rem, 0.8vw, 0.75rem)",
                         }}
                       >
                         Collections
                       </h3>
-                      <ul className="space-y-3">
+                      <ul
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: "clamp(0.5rem, 1.2vh, 0.75rem)",
+                        }}
+                      >
                         <li>
                           <Link
                             href="/category/pro"
-                            className="block text-sm text-[var(--text-secondary)] hover:text-[var(--accent-gold)] transition rounded-lg hover:bg-white/5"
-                            style={{ padding: "0.5rem" }}
+                            onClick={() => setShopOpen(false)}
+                            className="block text-[var(--text-secondary)] hover:text-[var(--accent-gold)] transition rounded-xl border border-transparent hover:border-[var(--accent-gold)]/20 hover:bg-[var(--accent-gold)]/10"
+                            style={{
+                              paddingTop: "clamp(0.55rem, 1.1vh, 0.75rem)",
+                              paddingBottom: "clamp(0.55rem, 1.1vh, 0.75rem)",
+                              paddingLeft: "clamp(0.75rem, 1.2vw, 0.9rem)",
+                              paddingRight: "clamp(0.75rem, 1.2vw, 0.9rem)",
+                              fontSize: "clamp(0.85rem, 0.95vw, 0.95rem)",
+                            }}
                           >
                             Pro Series
                           </Link>
@@ -277,8 +388,15 @@ export default function Header() {
                         <li>
                           <Link
                             href="/category/eco"
-                            className="block text-sm text-[var(--text-secondary)] hover:text-[var(--accent-gold)] transition rounded-lg hover:bg-white/5"
-                            style={{ padding: "0.5rem" }}
+                            onClick={() => setShopOpen(false)}
+                            className="block text-[var(--text-secondary)] hover:text-[var(--accent-gold)] transition rounded-xl border border-transparent hover:border-[var(--accent-gold)]/20 hover:bg-[var(--accent-gold)]/10"
+                            style={{
+                              paddingTop: "clamp(0.55rem, 1.1vh, 0.75rem)",
+                              paddingBottom: "clamp(0.55rem, 1.1vh, 0.75rem)",
+                              paddingLeft: "clamp(0.75rem, 1.2vw, 0.9rem)",
+                              paddingRight: "clamp(0.75rem, 1.2vw, 0.9rem)",
+                              fontSize: "clamp(0.85rem, 0.95vw, 0.95rem)",
+                            }}
                           >
                             Eco Series
                           </Link>
@@ -286,8 +404,15 @@ export default function Header() {
                         <li>
                           <Link
                             href="/category/tester"
-                            className="block text-sm text-[var(--text-secondary)] hover:text-[var(--accent-gold)] transition rounded-lg hover:bg-white/5"
-                            style={{ padding: "0.5rem" }}
+                            onClick={() => setShopOpen(false)}
+                            className="block text-[var(--text-secondary)] hover:text-[var(--accent-gold)] transition rounded-xl border border-transparent hover:border-[var(--accent-gold)]/20 hover:bg-[var(--accent-gold)]/10"
+                            style={{
+                              paddingTop: "clamp(0.55rem, 1.1vh, 0.75rem)",
+                              paddingBottom: "clamp(0.55rem, 1.1vh, 0.75rem)",
+                              paddingLeft: "clamp(0.75rem, 1.2vw, 0.9rem)",
+                              paddingRight: "clamp(0.75rem, 1.2vw, 0.9rem)",
+                              fontSize: "clamp(0.85rem, 0.95vw, 0.95rem)",
+                            }}
                           >
                             Testers
                           </Link>
@@ -341,7 +466,7 @@ export default function Header() {
 
       {/* Mobile Menu Drawer */}
       {mobileMenuOpen && (
-        <div className="lg:hidden fixed inset-0 z-[60]">
+        <div className="lg:hidden fixed inset-0 z-[60]" style={{ height: "100dvh" }}>
           {/* Backdrop */}
           <div
             className="absolute inset-0 bg-black/60 backdrop-blur-md"
@@ -350,7 +475,7 @@ export default function Header() {
 
           {/* Menu Panel */}
           <div
-            className="absolute right-0 top-0 h-full border-l border-[var(--accent-gold)]/30"
+            className="fixed right-0 top-0 bottom-0 border-l border-[var(--accent-gold)]/30 overflow-y-auto overscroll-contain"
             style={{
               width: "clamp(280px, 75vw, 400px)",
               paddingTop: "clamp(5.5rem, 14vh, 7.5rem)",
@@ -358,7 +483,8 @@ export default function Header() {
               paddingRight: "clamp(1.75rem, 4vw, 2.5rem)",
               paddingBottom: "clamp(2rem, 5vw, 3rem)",
               background: "var(--gradient-drawer)",
-              boxShadow: "-10px 0 50px rgba(0, 0, 0, 0.5)"
+              boxShadow: "-10px 0 60px rgba(0, 0, 0, 0.6)",
+              WebkitOverflowScrolling: "touch",
             }}
           >
             {/* Close Button */}
@@ -390,10 +516,13 @@ export default function Header() {
                 <Link
                   href="/best-sellers"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="block font-medium uppercase tracking-widest text-[var(--text-secondary)] transition hover:text-[var(--accent-gold)]"
+                  className="block font-medium uppercase tracking-widest text-[var(--text-secondary)] transition hover:text-[var(--accent-gold)] rounded-xl border border-transparent hover:border-[var(--accent-gold)]/20 hover:bg-[var(--accent-gold)]/10"
                   style={{
                     fontSize: "clamp(0.95rem, 1.1vw, 1.1rem)",
-                    padding: "clamp(0.5rem, 1.4vh, 0.75rem) 0",
+                    paddingTop: "clamp(0.75rem, 1.8vh, 0.95rem)",
+                    paddingBottom: "clamp(0.75rem, 1.8vh, 0.95rem)",
+                    paddingLeft: "clamp(0.9rem, 2.4vw, 1.2rem)",
+                    paddingRight: "clamp(0.9rem, 2.4vw, 1.2rem)",
                     letterSpacing: "0.08em"
                   }}
                 >
@@ -402,10 +531,13 @@ export default function Header() {
                 <Link
                   href="/gift-sets"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="block font-medium uppercase tracking-widest text-[var(--text-secondary)] transition hover:text-[var(--accent-gold)]"
+                  className="block font-medium uppercase tracking-widest text-[var(--text-secondary)] transition hover:text-[var(--accent-gold)] rounded-xl border border-transparent hover:border-[var(--accent-gold)]/20 hover:bg-[var(--accent-gold)]/10"
                   style={{
                     fontSize: "clamp(0.95rem, 1.1vw, 1.1rem)",
-                    padding: "clamp(0.5rem, 1.4vh, 0.75rem) 0",
+                    paddingTop: "clamp(0.75rem, 1.8vh, 0.95rem)",
+                    paddingBottom: "clamp(0.75rem, 1.8vh, 0.95rem)",
+                    paddingLeft: "clamp(0.9rem, 2.4vw, 1.2rem)",
+                    paddingRight: "clamp(0.9rem, 2.4vw, 1.2rem)",
                     letterSpacing: "0.08em"
                   }}
                 >
@@ -414,7 +546,7 @@ export default function Header() {
               </div>
 
               {/* Divider */}
-              <div style={{ borderTop: "1px solid var(--accent-gold)/20" }} />
+              <div className="border-t border-[var(--accent-gold)]/20" />
 
               {/* Shop Categories */}
               <div>
@@ -433,10 +565,13 @@ export default function Header() {
                     <Link
                       href="/category/men"
                       onClick={() => setMobileMenuOpen(false)}
-                      className="block text-[var(--text-secondary)] hover:text-[var(--accent-gold)] transition"
+                      className="block text-[var(--text-secondary)] hover:text-[var(--accent-gold)] transition rounded-xl border border-transparent hover:border-[var(--accent-gold)]/20 hover:bg-[var(--accent-gold)]/10"
                       style={{
                         fontSize: "clamp(0.85rem, 1vw, 0.95rem)",
-                        padding: "clamp(0.35rem, 0.8vh, 0.5rem) 0"
+                        paddingTop: "clamp(0.6rem, 1.4vh, 0.8rem)",
+                        paddingBottom: "clamp(0.6rem, 1.4vh, 0.8rem)",
+                        paddingLeft: "clamp(0.85rem, 2.2vw, 1.15rem)",
+                        paddingRight: "clamp(0.85rem, 2.2vw, 1.15rem)",
                       }}
                     >
                       Men
@@ -446,10 +581,13 @@ export default function Header() {
                     <Link
                       href="/category/women"
                       onClick={() => setMobileMenuOpen(false)}
-                      className="block text-[var(--text-secondary)] hover:text-[var(--accent-gold)] transition"
+                      className="block text-[var(--text-secondary)] hover:text-[var(--accent-gold)] transition rounded-xl border border-transparent hover:border-[var(--accent-gold)]/20 hover:bg-[var(--accent-gold)]/10"
                       style={{
                         fontSize: "clamp(0.85rem, 1vw, 0.95rem)",
-                        padding: "clamp(0.35rem, 0.8vh, 0.5rem) 0"
+                        paddingTop: "clamp(0.6rem, 1.4vh, 0.8rem)",
+                        paddingBottom: "clamp(0.6rem, 1.4vh, 0.8rem)",
+                        paddingLeft: "clamp(0.85rem, 2.2vw, 1.15rem)",
+                        paddingRight: "clamp(0.85rem, 2.2vw, 1.15rem)",
                       }}
                     >
                       Women
@@ -459,10 +597,13 @@ export default function Header() {
                     <Link
                       href="/category/unisex"
                       onClick={() => setMobileMenuOpen(false)}
-                      className="block text-[var(--text-secondary)] hover:text-[var(--accent-gold)] transition"
+                      className="block text-[var(--text-secondary)] hover:text-[var(--accent-gold)] transition rounded-xl border border-transparent hover:border-[var(--accent-gold)]/20 hover:bg-[var(--accent-gold)]/10"
                       style={{
                         fontSize: "clamp(0.85rem, 1vw, 0.95rem)",
-                        padding: "clamp(0.35rem, 0.8vh, 0.5rem) 0"
+                        paddingTop: "clamp(0.6rem, 1.4vh, 0.8rem)",
+                        paddingBottom: "clamp(0.6rem, 1.4vh, 0.8rem)",
+                        paddingLeft: "clamp(0.85rem, 2.2vw, 1.15rem)",
+                        paddingRight: "clamp(0.85rem, 2.2vw, 1.15rem)",
                       }}
                     >
                       Unisex
@@ -472,7 +613,7 @@ export default function Header() {
               </div>
 
               {/* Divider */}
-              <div style={{ borderTop: "1px solid var(--accent-gold)/20" }} />
+              <div className="border-t border-[var(--accent-gold)]/20" />
 
               {/* Collections */}
               <div>
@@ -491,10 +632,13 @@ export default function Header() {
                     <Link
                       href="/category/pro"
                       onClick={() => setMobileMenuOpen(false)}
-                      className="block text-[var(--text-secondary)] hover:text-[var(--accent-gold)] transition"
+                      className="block text-[var(--text-secondary)] hover:text-[var(--accent-gold)] transition rounded-xl border border-transparent hover:border-[var(--accent-gold)]/20 hover:bg-[var(--accent-gold)]/10"
                       style={{
                         fontSize: "clamp(0.85rem, 1vw, 0.95rem)",
-                        padding: "clamp(0.35rem, 0.8vh, 0.5rem) 0"
+                        paddingTop: "clamp(0.6rem, 1.4vh, 0.8rem)",
+                        paddingBottom: "clamp(0.6rem, 1.4vh, 0.8rem)",
+                        paddingLeft: "clamp(0.85rem, 2.2vw, 1.15rem)",
+                        paddingRight: "clamp(0.85rem, 2.2vw, 1.15rem)",
                       }}
                     >
                       Pro Series
@@ -504,10 +648,13 @@ export default function Header() {
                     <Link
                       href="/category/eco"
                       onClick={() => setMobileMenuOpen(false)}
-                      className="block text-[var(--text-secondary)] hover:text-[var(--accent-gold)] transition"
+                      className="block text-[var(--text-secondary)] hover:text-[var(--accent-gold)] transition rounded-xl border border-transparent hover:border-[var(--accent-gold)]/20 hover:bg-[var(--accent-gold)]/10"
                       style={{
                         fontSize: "clamp(0.85rem, 1vw, 0.95rem)",
-                        padding: "clamp(0.35rem, 0.8vh, 0.5rem) 0"
+                        paddingTop: "clamp(0.6rem, 1.4vh, 0.8rem)",
+                        paddingBottom: "clamp(0.6rem, 1.4vh, 0.8rem)",
+                        paddingLeft: "clamp(0.85rem, 2.2vw, 1.15rem)",
+                        paddingRight: "clamp(0.85rem, 2.2vw, 1.15rem)",
                       }}
                     >
                       Eco Series
@@ -517,10 +664,13 @@ export default function Header() {
                     <Link
                       href="/category/tester"
                       onClick={() => setMobileMenuOpen(false)}
-                      className="block text-[var(--text-secondary)] hover:text-[var(--accent-gold)] transition"
+                      className="block text-[var(--text-secondary)] hover:text-[var(--accent-gold)] transition rounded-xl border border-transparent hover:border-[var(--accent-gold)]/20 hover:bg-[var(--accent-gold)]/10"
                       style={{
                         fontSize: "clamp(0.85rem, 1vw, 0.95rem)",
-                        padding: "clamp(0.35rem, 0.8vh, 0.5rem) 0"
+                        paddingTop: "clamp(0.6rem, 1.4vh, 0.8rem)",
+                        paddingBottom: "clamp(0.6rem, 1.4vh, 0.8rem)",
+                        paddingLeft: "clamp(0.85rem, 2.2vw, 1.15rem)",
+                        paddingRight: "clamp(0.85rem, 2.2vw, 1.15rem)",
                       }}
                     >
                       Testers

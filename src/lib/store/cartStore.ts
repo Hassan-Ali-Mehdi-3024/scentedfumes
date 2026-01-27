@@ -2,14 +2,29 @@ import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { CartItem, Product } from "@/types";
 
+export type GiftSetPromotionCode =
+  | "gift_3_eco"
+  | "gift_3_pro"
+  | "pro_half_eco"
+  | "pro_half_testers";
+
+export type CartPromotion = {
+  code: GiftSetPromotionCode;
+  selections: number[];
+  label: string;
+};
+
 type CartState = {
   items: CartItem[];
   isOpen: boolean;
-  addItem: (product: Product) => void;
-  updateQuantity: (productId: string, quantity: number) => void;
-  removeItem: (productId: string) => void;
+  promotion: CartPromotion | null;
+  addItem: (product: Product, testerSelections?: string[]) => void;
+  updateQuantity: (cartItemKey: string, quantity: number) => void;
+  removeItem: (cartItemKey: string) => void;
   clearCart: () => void;
   toggleCart: () => void;
+  setPromotion: (promotion: CartPromotion) => void;
+  clearPromotion: () => void;
 };
 
 export const useCartStore = create<CartState>()(
@@ -17,14 +32,19 @@ export const useCartStore = create<CartState>()(
     (set) => ({
       items: [],
       isOpen: false,
-      addItem: (product) =>
+      promotion: null,
+      addItem: (product, testerSelections) =>
         set((state) => {
-          const exists = state.items.find((item) => item.id === product.id);
+          const cartItemKey = testerSelections?.length
+            ? `${product.id}::${testerSelections.join("|")}`
+            : product.id;
+
+          const exists = state.items.find((item) => item.cartItemKey === cartItemKey);
 
           if (exists) {
             return {
               items: state.items.map((item) =>
-                item.id === product.id
+                item.cartItemKey === cartItemKey
                   ? { ...item, quantity: item.quantity + 1 }
                   : item
               ),
@@ -33,24 +53,34 @@ export const useCartStore = create<CartState>()(
           }
 
           return {
-            items: [...state.items, { ...product, quantity: 1 }],
+            items: [
+              ...state.items,
+              {
+                ...product,
+                quantity: 1,
+                cartItemKey,
+                testerSelections,
+              },
+            ],
             isOpen: true,
           };
         }),
-      updateQuantity: (productId, quantity) =>
+      updateQuantity: (cartItemKey, quantity) =>
         set((state) => ({
           items: state.items
             .map((item) =>
-              item.id === productId ? { ...item, quantity } : item
+              item.cartItemKey === cartItemKey ? { ...item, quantity } : item
             )
             .filter((item) => item.quantity > 0),
         })),
-      removeItem: (productId) =>
+      removeItem: (cartItemKey) =>
         set((state) => ({
-          items: state.items.filter((item) => item.id !== productId),
+          items: state.items.filter((item) => item.cartItemKey !== cartItemKey),
         })),
-      clearCart: () => set({ items: [] }),
+      clearCart: () => set({ items: [], promotion: null }),
       toggleCart: () => set((state) => ({ isOpen: !state.isOpen })),
+      setPromotion: (promotion) => set({ promotion, isOpen: true }),
+      clearPromotion: () => set({ promotion: null }),
     }),
     {
       name: "scentedfumes-cart",

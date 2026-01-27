@@ -23,6 +23,7 @@ export interface CheckoutInput {
   shipToDifferentAddress: boolean;
   paymentMethod: string;
   isPaid: boolean;
+  customerNote?: string;
   metaData?: {
     key: string;
     value: string;

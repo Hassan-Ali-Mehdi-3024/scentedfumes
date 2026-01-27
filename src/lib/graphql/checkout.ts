@@ -1,10 +1,15 @@
 import { CheckoutInput, CartItem } from "@/types/checkout";
+import type { CartPromotion } from "@/lib/store/cartStore";
 
 /**
  * Process checkout via Next.js API route
  * This handles the WooCommerce cart session server-side
  */
-export async function processCheckout(input: CheckoutInput, cartItems: CartItem[]) {
+export async function processCheckout(
+  input: CheckoutInput,
+  cartItems: CartItem[],
+  promotion: CartPromotion | null = null
+) {
   try {
     const response = await fetch('/api/checkout', {
       method: 'POST',
@@ -14,6 +19,7 @@ export async function processCheckout(input: CheckoutInput, cartItems: CartItem[
       body: JSON.stringify({
         checkoutInput: input,
         cartItems,
+        promotion,
       }),
     });
 

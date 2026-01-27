@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { fetchProductBySlug, fetchProductSlugs } from "@/lib/graphql/products";
 import { formatPrice } from "@/lib/utils";
 import AddToCartButton from "@/components/product/AddToCartButton";
+import TesterSelectionForm from "@/components/product/TesterSelectionForm";
 import ProductCard from "@/components/ui/ProductCard";
 
 export const revalidate = 3600;
@@ -29,25 +30,37 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
   const description = product.shortDescription ?? product.description ?? "";
   const related = product.related?.nodes ?? [];
+  const isTesterChoice = product.slug === "5ml-testers-of-your-choice";
+  const testerAttributes = product.attributes?.nodes ?? [];
 
   return (
     <main 
       className="w-full flex-1 bg-[var(--bg-main)] text-[var(--text-secondary)]"
       style={{
-        paddingTop: "clamp(2rem, 4vh, 3rem)",
+        paddingTop: "calc(var(--header-offset, 5rem) + clamp(1.5rem, 3vh, 2.5rem))",
         paddingBottom: "clamp(2rem, 4vh, 3rem)",
-        paddingLeft: "clamp(1.5rem, 4vw, 4rem)",
-        paddingRight: "clamp(1.5rem, 4vw, 4rem)",
+        width: "100vw",
+        marginLeft: "calc(50% - 50vw)",
+        overflowX: "hidden",
+        backgroundColor: "var(--bg-main)",
       }}
     >
-      <section 
-        className="mx-auto w-full"
+      <div
         style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: "clamp(2rem, 4vh, 3rem)",
+          maxWidth: "1200px",
+          margin: "0 auto",
+          paddingLeft: "clamp(1.5rem, 4vw, 4rem)",
+          paddingRight: "clamp(1.5rem, 4vw, 4rem)",
         }}
       >
+        <section 
+          className="w-full"
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "clamp(2rem, 4vh, 3rem)",
+          }}
+        >
         <Link 
           href="/" 
           className="text-[var(--accent-gold)] font-medium transition-colors hover:text-[var(--text-secondary)]"
@@ -73,7 +86,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
             <div 
               className="relative w-full overflow-hidden rounded-3xl border border-[var(--accent-gold)]/20 bg-[var(--bg-surface)]/30"
               style={{
-                height: "clamp(350px, 50vh, 500px)",
+                height: "clamp(280px, 45vh, 500px)",
               }}
             >
               {product.image?.sourceUrl ? (
@@ -154,7 +167,11 @@ export default async function ProductPage({ params }: ProductPageProps) {
               />
 
               <div style={{ paddingTop: "clamp(0.5rem, 1vh, 0.75rem)" }}>
-                <AddToCartButton product={product} />
+                {isTesterChoice ? (
+                  <TesterSelectionForm product={product} attributes={testerAttributes} />
+                ) : (
+                  <AddToCartButton product={product} />
+                )}
               </div>
 
               <div 
@@ -270,7 +287,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
             </div>
           </section>
         ) : null}
-      </section>
+        </section>
+      </div>
     </main>
   );
 }

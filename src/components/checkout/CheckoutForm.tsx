@@ -5,12 +5,13 @@ import { useRouter } from "next/navigation";
 import { useCartStore } from "@/lib/store/cartStore";
 import { processCheckout } from "@/lib/graphql/checkout";
 import { CheckoutInput } from "@/types/checkout";
-import { cn, extractNumericPrice } from "@/lib/utils";
+import { cn, extractNumericPrice, calculateDisplayTotals } from "@/lib/utils";
 
 export default function CheckoutForm() {
   const router = useRouter();
-  const { items, clearCart } = useCartStore();
-  const totalPrice = items.reduce((acc, it) => acc + extractNumericPrice(it.price) * (it.quantity || 0), 0);
+  const { items, clearCart, promotion } = useCartStore();
+  const { subtotal: subtotalPrice, discount: promotionDiscount, total: discountedSubtotal } =
+    calculateDisplayTotals(items, promotion);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successData, setSuccessData] = useState<{
@@ -87,6 +88,24 @@ export default function CheckoutForm() {
     }
 
     try {
+      const testerSelectionsNote = items
+        .filter((item) => item.testerSelections && item.testerSelections.length > 0)
+        .map((item) => {
+          const selections = item.testerSelections
+            ?.map((selection, index) => `Tester ${index + 1}: ${selection}`)
+            .join(" | ");
+          return `${item.name} -> ${selections}`;
+        })
+        .join(" || ");
+
+      const promotionNote = promotion
+        ? `Promotion: ${promotion.label} | Items: ${promotion.selections
+            .map((id) => items.find((it) => it.databaseId === id)?.name ?? String(id))
+            .join(", ")}`
+        : "";
+
+      const customerNote = [promotionNote, testerSelectionsNote].filter(Boolean).join(" || ");
+
       const input: CheckoutInput = {
         clientMutationId: crypto.randomUUID(),
         billing: {
@@ -112,6 +131,7 @@ export default function CheckoutForm() {
         shipToDifferentAddress: false,
         paymentMethod: "cod",
         isPaid: false,
+        customerNote: customerNote || undefined,
       };
 
       // Prepare cart items for WooCommerce
@@ -120,7 +140,7 @@ export default function CheckoutForm() {
         quantity: item.quantity,
       }));
 
-      const result = await processCheckout(input, cartItems);
+      const result = await processCheckout(input, cartItems, promotion);
 
       if (result?.result === "success" && result?.order) {
         // Show success confirmation with order details
@@ -207,8 +227,8 @@ export default function CheckoutForm() {
     );
   }
 
-  const shippingFee = totalPrice >= 3000 ? 0 : 200;
-  const finalTotal = totalPrice + shippingFee;
+  const shippingFee = discountedSubtotal >= 3000 ? 0 : 200;
+  const finalTotal = discountedSubtotal + shippingFee;
 
   return (
     <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "clamp(1.5rem, 3.5vh, 2.25rem)", position: "relative" }}>
@@ -700,17 +720,23 @@ export default function CheckoutForm() {
         <div style={{ display: "flex", flexDirection: "column", gap: "clamp(0.6rem, 1.4vh, 0.85rem)", paddingTop: "clamp(0.6rem, 1.5vh, 0.9rem)" }}>
           <div className="flex items-center justify-between" style={{ fontSize: "clamp(0.96rem, 1.05vw, 1.05rem)" }}>
             <span style={{ opacity: 0.85 }}>Subtotal</span>
-            <span>Rs {totalPrice.toLocaleString()}</span>
+            <span>Rs {subtotalPrice.toLocaleString()}</span>
           </div>
+          {promotionDiscount > 0 && (
+            <div className="flex items-center justify-between" style={{ fontSize: "clamp(0.96rem, 1.05vw, 1.05rem)" }}>
+              <span style={{ opacity: 0.85 }}>Promotion</span>
+              <span className="text-[var(--accent-gold)]">- Rs {promotionDiscount.toLocaleString()}</span>
+            </div>
+          )}
           <div className="flex items-center justify-between" style={{ fontSize: "clamp(0.96rem, 1.05vw, 1.05rem)" }}>
             <span style={{ opacity: 0.85 }}>Shipping</span>
             <span className={shippingFee === 0 ? "text-[var(--accent-gold)]" : ""}>
               {shippingFee === 0 ? "Free" : `Rs ${shippingFee}`}
             </span>
           </div>
-          {totalPrice < 3000 && (
+          {discountedSubtotal < 3000 && (
             <p style={{ fontSize: "clamp(0.88rem, 0.95vw, 0.96rem)", opacity: 0.7, lineHeight: 1.5 }}>
-              Add Rs {(3000 - totalPrice).toLocaleString()} more to unlock free shipping.
+              Add Rs {(3000 - discountedSubtotal).toLocaleString()} more to unlock free shipping.
             </p>
           )}
           <div

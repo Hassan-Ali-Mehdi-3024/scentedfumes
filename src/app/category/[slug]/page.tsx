@@ -1,10 +1,10 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { fetchCategoryBySlug, fetchCategorySlugs } from "@/lib/graphql/categories";
+import { fetchCategoryBySlug } from "@/lib/graphql/categories";
 import { formatPrice } from "@/lib/utils";
 import ProductCard from "@/components/ui/ProductCard";
 
-export const revalidate = 0; // Force fresh data on every request during development
+export const revalidate = 3600;
 
 export async function generateStaticParams() {
   // Only pre-generate main category pages to avoid timeouts
